@@ -1,14 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.glasslauncher.example.mixin",
+  "package": "net.mine_diver.smoothbeta.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "ExampleMixin"
-  ],
-  "server": [
-  ],
   "client": [
+    "MixinGameOptions",
+    "MixinLevel",
+    "MixinVideoSettings"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,45 +1,41 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "smoothbeta",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "SmoothBeta",
+  "description": "Additional settings for beta that allow for smoother experience!",
   "authors": [
-    "Me!"
+    "mine_diver"
   ],
   "contact": {
-    "homepage": "https://glass-launcher.net/",
-    "sources": "https://github.com/calmilamsy/BIN-fabric-example-mod"
+    "homepage": "https://glass-repo.net/repo/mod/smoothbeta",
+    "sources": "https://github.com/mineLdiver/smoothbeta",
+    "issues": "https://github.com/mineLdiver/smoothbeta/issues"
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/examplemod/icon.png",
+  "icon": "assets/smoothbeta/icon.png",
 
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "stationapi:event_bus": [
-      "net.glasslauncher.example.events.init.AchievementListener",
-      "net.glasslauncher.example.events.init.BlockListener",
-      "net.glasslauncher.example.events.init.ItemListener",
-      "net.glasslauncher.example.events.init.PlayerHandlerListener",
-      "net.glasslauncher.example.events.init.RecipeListener"
-    ],
     "stationapi:event_bus_client": [
-      "net.glasslauncher.example.events.init.ModelListener",
-      "net.glasslauncher.example.events.init.KeyBindingListener",
-      "net.glasslauncher.example.events.init.TextureListener",
-      "net.glasslauncher.example.events.ingame.KeyPressedListener"
-    ],
-    "stationapi:event_bus_server": [
-      "net.glasslauncher.example.events.init.ServerInitListener"
+      "net.mine_diver.smoothbeta.SmoothBeta"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json"
+    {
+      "environment": "client",
+      "config": "vsync.mixins.json"
+    }
   ],
 
   "depends": {
-    "minecraft": "1.0.0-beta.7.3"
+    "minecraft": "1.0.0-beta.7.3",
+    "stationapi": ">=2.0-PRE2"
+  },
+
+  "custom": {
+    "modmenu:clientsideOnly": true
   }
 }
