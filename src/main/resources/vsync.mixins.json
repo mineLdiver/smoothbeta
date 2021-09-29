@@ -5,8 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinGameOptions",
-    "MixinLevel",
-    "MixinVideoSettings"
+    "MixinVideoSettings",
+    "accessor.LevelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

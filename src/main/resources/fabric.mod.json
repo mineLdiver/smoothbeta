@@ -20,7 +20,8 @@
   "environment": "client",
   "entrypoints": {
     "stationapi:event_bus_client": [
-      "net.mine_diver.smoothbeta.SmoothBeta"
+      "net.mine_diver.smoothbeta.SmoothBeta",
+      "net.mine_diver.smoothbeta.level.LevelListener"
     ]
   },
   "mixins": [
