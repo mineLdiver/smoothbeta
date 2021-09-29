@@ -10,7 +10,8 @@ public class MixinLevel {
 
     @ModifyConstant(
             method = "<init>*",
-            constant = @Constant(intValue = 40)
+            constant = @Constant(intValue = 40),
+            remap = false
     )
     private int modSaveTime(int constant) {
         return 3600;
