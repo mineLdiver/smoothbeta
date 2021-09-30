@@ -9,9 +9,12 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class MixinLevel {
 
     @ModifyConstant(
-            method = "<init>*",
-            constant = @Constant(intValue = 40),
-            remap = false
+            method = {
+                    "<init>(Lnet/minecraft/level/dimension/DimensionData;Ljava/lang/String;Lnet/minecraft/level/dimension/Dimension;J)V",
+                    "<init>(Lnet/minecraft/level/Level;Lnet/minecraft/level/dimension/Dimension;)V",
+                    "<init>(Lnet/minecraft/level/dimension/DimensionData;Ljava/lang/String;JLnet/minecraft/level/dimension/Dimension;)V"
+            },
+            constant = @Constant(intValue = 40)
     )
     private int modSaveTime(int constant) {
         return 3600;
