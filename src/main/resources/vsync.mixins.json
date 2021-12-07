@@ -4,11 +4,16 @@
   "package": "net.mine_diver.smoothbeta.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MixinGameOptions",
-    "MixinLevel",
-    "MixinVideoSettings"
+    "client.MixinGameOptions",
+    "client.MixinVideoSettings"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "MixinBiomeSource",
+    "MixinChunk",
+    "MixinLevel",
+    "MixinServerChunkCache"
+  ]
 }

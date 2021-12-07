@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin;
+package net.mine_diver.smoothbeta.mixin.client;
 
 import net.mine_diver.smoothbeta.SmoothBeta;
 import net.minecraft.client.options.GameOptions;

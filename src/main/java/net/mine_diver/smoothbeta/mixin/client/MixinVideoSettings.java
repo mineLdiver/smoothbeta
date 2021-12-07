@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin;
+package net.mine_diver.smoothbeta.mixin.client;
 
 import com.google.common.collect.ObjectArrays;
 import net.minecraft.client.gui.screen.menu.VideoSettings;
