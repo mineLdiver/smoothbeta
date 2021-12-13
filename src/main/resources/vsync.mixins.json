@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.MixinGameOptions",
-    "client.MixinVideoSettings"
+    "client.MixinVideoSettings",
+    "client.MixinEntityRendererDispatcher"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -13,6 +14,7 @@
   "mixins": [
     "MixinBiomeSource",
     "MixinChunk",
+    "MixinEntityRegistry",
     "MixinLevel",
     "MixinServerChunkCache"
   ]

@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta;
+package net.mine_diver.smoothbeta.client;
 
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.client.options.Option;
@@ -13,7 +13,7 @@ import net.modificationstation.stationapi.api.util.Null;
 import static net.modificationstation.stationapi.api.registry.Identifier.of;
 
 @Entrypoint(eventBus = @EventBusPolicy(registerInstance = false))
-public class SmoothBeta {
+public class SmoothBetaClient {
 
     @Entrypoint.ModID
     public static final ModID MODID = Null.get();

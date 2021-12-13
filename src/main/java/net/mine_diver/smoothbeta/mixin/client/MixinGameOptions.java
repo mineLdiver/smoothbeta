@@ -1,6 +1,6 @@
 package net.mine_diver.smoothbeta.mixin.client;
 
-import net.mine_diver.smoothbeta.SmoothBeta;
+import net.mine_diver.smoothbeta.client.SmoothBetaClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.Option;
 import org.lwjgl.opengl.Display;
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.io.*;
 import java.util.*;
 
-import static net.mine_diver.smoothbeta.SmoothBeta.VSYNC;
-import static net.mine_diver.smoothbeta.SmoothBeta.VSYNC_ID;
+import static net.mine_diver.smoothbeta.client.SmoothBetaClient.VSYNC;
+import static net.mine_diver.smoothbeta.client.SmoothBetaClient.VSYNC_ID;
 
 @Mixin(GameOptions.class)
 public class MixinGameOptions {
@@ -56,7 +56,7 @@ public class MixinGameOptions {
             at = @At("HEAD")
     )
     private void changeOption(Option option, int i, CallbackInfo ci) {
-        if (option == SmoothBeta.VSYNC)
+        if (option == SmoothBetaClient.VSYNC)
             Display.setVSyncEnabled(vsync = !vsync);
     }
 

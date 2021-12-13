@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static net.mine_diver.smoothbeta.SmoothBeta.VSYNC;
+import static net.mine_diver.smoothbeta.client.SmoothBetaClient.VSYNC;
 
 @Mixin(VideoSettings.class)
 public class MixinVideoSettings {
