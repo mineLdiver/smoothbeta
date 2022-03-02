@@ -4,6 +4,7 @@ import net.mine_diver.smoothbeta.util.ChunkCustomAccessor;
 import net.minecraft.level.Level;
 import net.minecraft.level.biome.Biome;
 import net.minecraft.level.gen.BiomeSource;
+import net.minecraft.util.maths.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -59,27 +60,31 @@ public class MixinBiomeSource {
                 temperatureNoises[0] = chunk.getTemperature()[cCoords];
                 detailNoises[0] = chunk.getDetail()[cCoords];
             } else {
-                double[] cTemperature = null;
-                double[] cDetail = null;
-                int counter = 0;
-                for (int xd = 0; xd < xSize; xd++) {
-                    if (((x + xd) & 15) == 0 || chunk == null) {
-                        chunk = (ChunkCustomAccessor) level.getChunk(x + xd, z);
-                        cTemperature = chunk.getTemperature();
-                        cDetail = chunk.getDetail();
-                    }
-                    for (int zd = 0; zd < zSize; zd++) {
-                        if (((z + zd) & 15) == 0) {
-                            chunk = (ChunkCustomAccessor) level.getChunk(x + xd, z + zd);
-                            cTemperature = chunk.getTemperature();
-                            cDetail = chunk.getDetail();
-                        }
-                        cCoords = (((x + xd) & 15) << 4) + ((z + zd) & 15);
-                        temperatures[counter] = cTemperature[cCoords];
-                        detailNoises[counter] = cDetail[cCoords];
-                        counter++;
-                    }
-                }
+                int xChunk = x / 16;
+                int xChunkEnd = (int) Math.ceil((x + xSize) / 16D);
+                int xChunkSize = xChunkEnd - xChunk;
+
+//                double[] cTemperature = null;
+//                double[] cDetail = null;
+//                int counter = 0;
+//                for (int xd = 0; xd < xSize; xd++) {
+//                    if (((x + xd) & 15) == 0 || chunk == null) {
+//                        chunk = (ChunkCustomAccessor) level.getChunk(x + xd, z);
+//                        cTemperature = chunk.getTemperature();
+//                        cDetail = chunk.getDetail();
+//                    }
+//                    for (int zd = 0; zd < zSize; zd++) {
+//                        if (((z + zd) & 15) == 0) {
+//                            chunk = (ChunkCustomAccessor) level.getChunk(x + xd, z + zd);
+//                            cTemperature = chunk.getTemperature();
+//                            cDetail = chunk.getDetail();
+//                        }
+//                        cCoords = (((x + xd) & 15) << 4) + ((z + zd) & 15);
+//                        temperatures[counter] = cTemperature[cCoords];
+//                        detailNoises[counter] = cDetail[cCoords];
+//                        counter++;
+//                    }
+//                }
             }
             cir.setReturnValue(temperatures);
         }

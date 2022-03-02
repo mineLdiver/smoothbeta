@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "SmoothBeta",
-  "description": "Additional settings for beta that allow for smoother experience!",
+  "description": "Additional settings and optimizations for beta that allow for smoother experience!",
   "authors": [
     "mine_diver"
   ],
@@ -17,25 +17,21 @@
   "license": "CC0-1.0",
   "icon": "assets/smoothbeta/icon.png",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
+    "stationapi:event_bus": [
+      "net.mine_diver.smoothbeta.SmoothBeta"
+    ],
     "stationapi:event_bus_client": [
       "net.mine_diver.smoothbeta.client.SmoothBetaClient"
     ]
   },
   "mixins": [
-    {
-      "environment": "client",
-      "config": "vsync.mixins.json"
-    }
+    "smoothbeta.mixins.json"
   ],
 
   "depends": {
     "minecraft": "1.0.0-beta.7.3",
-    "stationapi": ">=2.0-PRE2"
-  },
-
-  "custom": {
-    "modmenu:clientsideOnly": true
+    "stationapi": "*"
   }
 }

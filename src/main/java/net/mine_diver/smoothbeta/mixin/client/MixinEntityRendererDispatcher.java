@@ -16,7 +16,6 @@ public class MixinEntityRendererDispatcher {
 
     @Shadow private Map<Class<? extends EntityBase>, EntityRenderer> renderers;
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Redirect(
             method = "<init>()V",
             at = @At(
