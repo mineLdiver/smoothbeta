@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin.client;
+package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
 import net.mine_diver.smoothbeta.client.render.TerrainContext;
@@ -36,6 +36,16 @@ public abstract class TessellatorMixin implements SmoothTessellator {
     public void smoothbeta_stopRenderingTerrain() {
         smoothbeta_renderingTerrain = false;
         smoothbeta_terrainConext = null;
+    }
+
+    @Override
+    public boolean smoothbeta_isRenderingTerrain() {
+        return smoothbeta_renderingTerrain;
+    }
+
+    @Override
+    public TerrainContext smoothbeta_getTerrainContext() {
+        return smoothbeta_terrainConext;
     }
 
     @Inject(

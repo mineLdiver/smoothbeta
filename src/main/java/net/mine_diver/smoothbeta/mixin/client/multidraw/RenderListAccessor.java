@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin.client;
+package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.minecraft.client.render.RenderList;
 import org.spongepowered.asm.mixin.Mixin;

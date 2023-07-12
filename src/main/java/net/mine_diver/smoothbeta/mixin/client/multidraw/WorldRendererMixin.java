@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin.client;
+package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.mine_diver.smoothbeta.client.render.*;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;

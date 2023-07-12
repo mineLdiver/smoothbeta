@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin.client;
+package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.mine_diver.smoothbeta.client.render.*;
@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -31,9 +30,6 @@ public class ChunkRendererMixin implements SmoothChunkRenderer {
     @Shadow public int field_240;
     @Shadow public int field_241;
     @Shadow public int field_242;
-    @Shadow public int field_231;
-    @Shadow public int field_233;
-    @Shadow public int field_232;
     @Unique
     private VertexBuffer[] smoothbeta_buffers;
     @Unique
@@ -75,7 +71,6 @@ public class ChunkRendererMixin implements SmoothChunkRenderer {
         float f = 1.000001f;
         smoothbeta_matrices.scale(f, f, f);
         smoothbeta_matrices.translate((float)this.field_236 / 2.0f, (float)this.field_235 / 2.0f, (float)this.field_236 / 2.0f);
-        smoothbeta_matrices.translate(-this.field_231, -this.field_232, -this.field_233);
         ((SmoothTessellator) tesselator).smoothbeta_startRenderingTerrain(
                 new TerrainContext(
                         smoothbeta_matrices,
@@ -96,13 +91,4 @@ public class ChunkRendererMixin implements SmoothChunkRenderer {
         ((SmoothTessellator) tesselator).smoothbeta_stopRenderingTerrain();
         smoothbeta_matrices.pop();
     }
-
-    @Redirect(
-            method = "method_296",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Tessellator;setOffset(DDD)V"
-            )
-    )
-    private void smoothbeta_disableTessellatorOffset(Tessellator instance, double e, double f, double v) {}
 }

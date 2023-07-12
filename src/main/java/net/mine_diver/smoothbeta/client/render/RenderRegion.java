@@ -2,7 +2,7 @@ package net.mine_diver.smoothbeta.client.render;
 
 import net.mine_diver.smoothbeta.client.render.gl.GlUniform;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
-import net.mine_diver.smoothbeta.mixin.client.RenderListAccessor;
+import net.mine_diver.smoothbeta.mixin.client.multidraw.RenderListAccessor;
 import net.minecraft.client.render.RenderList;
 import net.minecraft.client.render.WorldRenderer;
 import net.modificationstation.stationapi.api.util.math.Vec3f;
