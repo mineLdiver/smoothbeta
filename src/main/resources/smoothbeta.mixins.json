@@ -4,14 +4,16 @@
   "package": "net.mine_diver.smoothbeta.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "client.ChunkRendererMixin",
+    "client.MinecraftAccessor",
     "client.MixinEntityRendererDispatcher",
-    "client.MixinTileEntityRenderDispatcher"
+    "client.MixinTileEntityRenderDispatcher",
+    "client.RenderListAccessor",
+    "client.TessellatorMixin",
+    "client.WorldRendererMixin"
   ],
   "mixins": [
-    "MixinBiomeSource",
-    "MixinChunk",
     "MixinEntityRegistry",
-    "MixinLevel",
     "MixinServerChunkCache"
   ],
   "injectors": {

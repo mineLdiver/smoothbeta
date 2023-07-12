@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12.cursed_1'
+	id 'babric-loom' version '1.1.7'
 	id 'maven-publish'
 }
 
@@ -10,59 +10,67 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+loom {
+	gluedMinecraftJar()
+	customMinecraftManifest.set("https://babric.github.io/manifest-polyfill/${minecraft_version}.json")
+}
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	// Used for the fabric toolchain in this project.
 	maven {
-		name = 'Jitpack'
-		url = 'https://jitpack.io'
+		name = 'Babric'
+		url = 'https://maven.glass-launcher.net/babric'
 	}
+	// Used for mappings.
 	maven {
-		name = 'Glass'
+		name = 'Glass Releases'
+		url = 'https://maven.glass-launcher.net/releases'
+	}
+	// Used for StationAPI and HowManyItems.
+	maven {
+		name = 'Glass Snapshots'
 		url = 'https://maven.glass-launcher.net/snapshots'
 	}
-	maven {
-		name = 'HalfOf2'
-		url = 'https://storage.googleapis.com/devan-maven/'
-	}
+	// Used for a StationAPI dependency.
 	maven {
 		name = 'Froge'
 		url 'https://maven.minecraftforge.net/'
 	}
-}
-
-loom {
-	customMinecraftManifest = "https://pymcl.net/b1.7.3.json"
-	intermediaryUrl = "https://pymcl.net/b1.7.3-int.jar"
-	cursedMinecraftJar()
+	// Used for projects that do not have a maven repository, but do have a GitHub repository with working build scripts.
+	maven {
+		name = 'Jitpack'
+		url = 'https://jitpack.io'
+	}
+	mavenCentral()
 }
 
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "com.github.calmilamsy:BIN-Mappings:${project.yarn_mappings}"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	mappings "net.glasslauncher:bin:${project.yarn_mappings}"
+	modImplementation "babric:fabric-loader:${project.loader_version}"
 
-	modImplementation ("net.modificationstation:StationAPI:99ccdc3") {
-		exclude module: "cursed-fabric-loader"
+	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
+	implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2'
+
+	modImplementation "net.modificationstation:StationAPI:${project.stapi_version}"
+
+	// Optional, but convenient mods for mod creators and users alike.
+	modImplementation("com.github.calmilamsy:ModMenu:${project.modmenu_version}") {
+		transitive false
 	}
-
-	implementation "com.google.code.gson:gson:2.9.0"
-
-	compileOnly 'org.projectlombok:lombok:1.18.22'
-	annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-	implementation "blue.endless:jankson:1.2.1"
-	modImplementation("com.github.calmilamsy:HowManyItems-Fabric-Unofficial:1c6873a") {
-		exclude module: "cursed-fabric-loader"
-		exclude module: "StationAPI"
+	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.gcapi_version}") {
+		transitive false
 	}
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	// modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation("net.glasslauncher:HowManyItems-Fabric-Unofficial:${project.howmanyitems_version}") {
+		transitive false
+	}
 }
 
 processResources {
@@ -75,6 +83,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	// Loom also requires J17.
 	it.options.release = 17
 }
 

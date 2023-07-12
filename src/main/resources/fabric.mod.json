@@ -23,7 +23,8 @@
       "net.mine_diver.smoothbeta.SmoothBeta"
     ],
     "stationapi:event_bus_client": [
-      "net.mine_diver.smoothbeta.client.SmoothBetaClient"
+      "net.mine_diver.smoothbeta.client.SmoothBetaClient",
+      "net.mine_diver.smoothbeta.client.render.Shaders"
     ]
   },
   "mixins": [
