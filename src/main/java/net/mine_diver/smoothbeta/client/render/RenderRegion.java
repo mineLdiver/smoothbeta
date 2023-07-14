@@ -38,22 +38,13 @@ public class RenderRegion extends RenderList {
     }
 
     public void method_1909() {
-        if (!_super.smoothbeta_getField_2487()) {
-            return;
-        }
-        if (!buffers.isEmpty()) {
-            Shader shader = Shaders.getTerrainShader();
-            GlUniform chunkOffset = null;
-            if (shader != null)
-                chunkOffset = shader.chunkOffset;
-            if (chunkOffset != null) {
-                chunkOffset.set(_super.smoothbeta_getField_2480() - _super.smoothbeta_getField_2483(), _super.smoothbeta_getField_2481() - _super.smoothbeta_getField_2484(), _super.smoothbeta_getField_2482() - _super.smoothbeta_getField_2485());
-                chunkOffset.upload();
-            }
-            for (VertexBuffer vertexBuffer : buffers) vertexBuffer.uploadToPool();
-            stationWorldRenderer.smoothbeta_getTerrainVboPool().drawAll();
-            if (chunkOffset != null)
-                chunkOffset.set(Vec3f.ZERO);
-        }
+        if (!_super.smoothbeta_getField_2487() || buffers.isEmpty()) return;
+        Shader shader = Shaders.getTerrainShader();
+        GlUniform chunkOffset = shader.chunkOffset;
+        chunkOffset.set(_super.smoothbeta_getField_2480() - _super.smoothbeta_getField_2483(), _super.smoothbeta_getField_2481() - _super.smoothbeta_getField_2484(), _super.smoothbeta_getField_2482() - _super.smoothbeta_getField_2485());
+        chunkOffset.upload();
+        for (VertexBuffer vertexBuffer : buffers) vertexBuffer.uploadToPool();
+        stationWorldRenderer.smoothbeta_getTerrainVboPool().drawAll();
+        chunkOffset.set(Vec3f.ZERO);
     }
 }

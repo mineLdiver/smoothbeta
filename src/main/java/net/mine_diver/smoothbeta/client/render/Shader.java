@@ -17,7 +17,6 @@ import net.modificationstation.stationapi.api.resource.ResourceFactory;
 import net.modificationstation.stationapi.api.util.FileNameUtil;
 import net.modificationstation.stationapi.api.util.JsonHelper;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL13;
 
 import java.io.BufferedReader;
@@ -44,22 +43,15 @@ public class Shader implements GlShader, AutoCloseable {
 	private final GlBlendState blendState;
 	private final Program vertexShader;
 	private final Program fragmentShader;
-	@Nullable
-	public final GlUniform modelViewMat;
-	@Nullable
-	public final GlUniform projectionMat;
-	@Nullable
-	public final GlUniform fogMode;
-	@Nullable
-	public final GlUniform fogDensity;
-	@Nullable
-	public final GlUniform fogStart;
-	@Nullable
-	public final GlUniform fogEnd;
-	@Nullable
-	public final GlUniform fogColor;
-	@Nullable
-	public final GlUniform chunkOffset;
+	public final GlUniform
+			modelViewMat,
+			projectionMat,
+			fogMode,
+			fogDensity,
+			fogStart,
+			fogEnd,
+			fogColor,
+			chunkOffset;
 
 	public Shader(ResourceFactory factory, String name, VertexFormat format) throws IOException {
 		this.name = name;
@@ -297,7 +289,6 @@ public class Shader implements GlShader, AutoCloseable {
 
 	}
 
-	@Nullable
 	public GlUniform getUniform(String name) {
 		return this.loadedUniforms.get(name);
 	}

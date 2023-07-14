@@ -5,10 +5,7 @@ import net.mine_diver.smoothbeta.client.render.gl.GlStateManager;
 import net.mine_diver.smoothbeta.mixin.client.MinecraftAccessor;
 import net.minecraft.class_214;
 import net.modificationstation.stationapi.api.util.collection.LinkedList;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -17,7 +14,6 @@ public class VboPool implements AutoCloseable {
     @SuppressWarnings("deprecation")
     private static final MinecraftAccessor mc = ((MinecraftAccessor) FabricLoader.getInstance().getGameInstance());
 
-    private final VertexFormat format;
     private int vertexArrayId = GL30.glGenVertexArrays();
     private int vertexBufferId = GL15.glGenBuffers();
     private int capacity = 4096;
@@ -32,7 +28,6 @@ public class VboPool implements AutoCloseable {
     private VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
 
     public VboPool(VertexFormat format) {
-        this.format = format;
         vertexBytes = format.getVertexSizeByte();
         this.bindBuffer();
         long i = this.toBytes(this.capacity);
@@ -41,7 +36,7 @@ public class VboPool implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (this.vertexBufferId > 0) {
             GlStateManager._glDeleteBuffers(this.vertexBufferId);
             this.vertexBufferId = 0;
@@ -209,15 +204,21 @@ public class VboPool implements AutoCloseable {
     }
 
     public void drawAll() {
-        this.bindVertexArray();
-        this.bindBuffer();
-        format.setupState();
+        GL30.glBindVertexArray(this.vertexArrayId);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.vertexBufferId);
 
-        int i = this.drawMode.getIndexCount(this.nextPos);
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 28, 0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glVertexAttribPointer(1, 2, GL11.GL_FLOAT, false, 28, 12);
+        GL20.glEnableVertexAttribArray(2);
+        GL20.glVertexAttribPointer(2, 4, GL11.GL_UNSIGNED_BYTE, true, 28, 20);
+        GL20.glEnableVertexAttribArray(3);
+        GL20.glVertexAttribPointer(3, 3, GL11.GL_BYTE, true, 28, 24);
+
         IndexBuffer autostorageindexbuffer = IndexBuffer.getSequentialBuffer(this.drawMode);
         VertexFormat.IndexType indextype = autostorageindexbuffer.getIndexType();
-        autostorageindexbuffer.bindAndGrow(i);
-//        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, autostorageindexbuffer.getId());
+        autostorageindexbuffer.bindAndGrow(nextPos / 4 * 6);
         this.bufferIndirect.flip();
         GL43.glMultiDrawElementsIndirect(this.drawMode.glMode, indextype.glType, this.bufferIndirect, bufferIndirect.limit() / 5, 0);
         this.bufferIndirect.limit(this.bufferIndirect.capacity());

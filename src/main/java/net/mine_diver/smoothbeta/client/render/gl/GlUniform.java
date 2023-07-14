@@ -196,10 +196,5 @@ public class GlUniform extends Uniform implements AutoCloseable {
 			case MAT3X3 -> GL20.glUniformMatrix3(this.location, TRANSPOSE, this.floatData);
 			case MAT4X4 -> GL20.glUniformMatrix4(this.location, TRANSPOSE, this.floatData);
 		}
-
-	}
-
-	public int getCount() {
-		return this.count;
 	}
 }

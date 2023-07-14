@@ -2,8 +2,6 @@ package net.mine_diver.smoothbeta.client.render;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL11;
@@ -12,19 +10,14 @@ import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class VertexFormat {
-    private final ImmutableList<VertexFormatElement> elements;
     private final ImmutableMap<String, VertexFormatElement> elementMap;
-    private final IntList offsets = new IntArrayList();
     private final int vertexSizeByte;
 
     public VertexFormat(ImmutableMap<String, VertexFormatElement> elementMap) {
         this.elementMap = elementMap;
-        this.elements = elementMap.values().asList();
         int i = 0;
-        for (VertexFormatElement vertexFormatElement : elementMap.values()) {
-            this.offsets.add(i);
+        for (VertexFormatElement vertexFormatElement : elementMap.values())
             i += vertexFormatElement.getByteLength();
-        }
         this.vertexSizeByte = i;
     }
 
@@ -34,10 +27,6 @@ public class VertexFormat {
 
     public int getVertexSizeByte() {
         return this.vertexSizeByte;
-    }
-
-    public ImmutableList<VertexFormatElement> getElements() {
-        return this.elements;
     }
 
     public ImmutableList<String> getAttributeNames() {
@@ -60,33 +49,6 @@ public class VertexFormat {
 
     public int hashCode() {
         return this.elementMap.hashCode();
-    }
-
-    /**
-     * Specifies for OpenGL how the vertex data should be interpreted.
-     */
-    public void setupState() {
-        this.setupStateInternal();
-    }
-
-    private void setupStateInternal() {
-        int i = this.getVertexSizeByte();
-        ImmutableList<VertexFormatElement> list = this.getElements();
-        for (int j = 0; j < list.size(); ++j) {
-            list.get(j).setupState(j, this.offsets.getInt(j), i);
-        }
-    }
-
-    public void clearState() {
-        this.clearStateInternal();
-    }
-
-    private void clearStateInternal() {
-        ImmutableList<VertexFormatElement> immutableList = this.getElements();
-        for (int i = 0; i < immutableList.size(); ++i) {
-            VertexFormatElement vertexFormatElement = immutableList.get(i);
-            vertexFormatElement.clearState(i);
-        }
     }
 
     @Environment(value=EnvType.CLIENT)

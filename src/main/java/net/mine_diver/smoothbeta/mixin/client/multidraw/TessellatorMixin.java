@@ -1,51 +1,46 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
+import net.mine_diver.smoothbeta.client.render.SmoothChunkRenderer;
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
-import net.mine_diver.smoothbeta.client.render.TerrainContext;
 import net.minecraft.client.render.Tessellator;
-import net.modificationstation.stationapi.api.util.math.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
 
 @Mixin(Tessellator.class)
-public abstract class TessellatorMixin implements SmoothTessellator {
+abstract class TessellatorMixin implements SmoothTessellator {
     @Shadow protected abstract void clear();
 
     @Shadow private ByteBuffer byteBuffer;
     @Unique
     private boolean smoothbeta_renderingTerrain;
     @Unique
-    private TerrainContext smoothbeta_terrainConext;
-    @Unique
-    private final Vector4f smoothbeta_pos = new Vector4f();
+    private SmoothChunkRenderer smoothbeta_chunkRenderer;
 
     @Override
     @Unique
-    public void smoothbeta_startRenderingTerrain(TerrainContext context) {
+    public void smoothbeta_startRenderingTerrain(SmoothChunkRenderer chunkRenderer) {
         smoothbeta_renderingTerrain = true;
-        smoothbeta_terrainConext = context;
+        smoothbeta_chunkRenderer = chunkRenderer;
     }
 
     @Override
     @Unique
     public void smoothbeta_stopRenderingTerrain() {
         smoothbeta_renderingTerrain = false;
-        smoothbeta_terrainConext = null;
+        smoothbeta_chunkRenderer = null;
     }
 
     @Override
     public boolean smoothbeta_isRenderingTerrain() {
         return smoothbeta_renderingTerrain;
-    }
-
-    @Override
-    public TerrainContext smoothbeta_getTerrainContext() {
-        return smoothbeta_terrainConext;
     }
 
     @Inject(
@@ -58,53 +53,10 @@ public abstract class TessellatorMixin implements SmoothTessellator {
             cancellable = true
     )
     private void smoothbeta_uploadTerrain(CallbackInfo ci) {
-        if (smoothbeta_renderingTerrain) {
-            smoothbeta_terrainConext.terrainConsumer().accept(byteBuffer);
-            clear();
-            ci.cancel();
-        }
-    }
-
-    @ModifyVariable(
-            method = "addVertex",
-            at = @At("HEAD"),
-            index = 1,
-            argsOnly = true
-    )
-    private double smoothbeta_transformTerrainX(double value, double x, double y, double z) {
-        if (!smoothbeta_renderingTerrain)
-            return value;
-        smoothbeta_pos.set((float) x, (float) y, (float) z, 1.0f);
-        smoothbeta_pos.transform(smoothbeta_terrainConext.matrices().peek().getPositionMatrix());
-        return smoothbeta_pos.getX();
-    }
-
-    @ModifyVariable(
-            method = "addVertex",
-            at = @At("HEAD"),
-            index = 3,
-            argsOnly = true
-    )
-    private double smoothbeta_transformTerrainY(double value, double x, double y, double z) {
-        if (!smoothbeta_renderingTerrain)
-            return value;
-        smoothbeta_pos.set((float) x, (float) y, (float) z, 1.0f);
-        smoothbeta_pos.transform(smoothbeta_terrainConext.matrices().peek().getPositionMatrix());
-        return smoothbeta_pos.getY();
-    }
-
-    @ModifyVariable(
-            method = "addVertex",
-            at = @At("HEAD"),
-            index = 5,
-            argsOnly = true
-    )
-    private double smoothbeta_transformTerrainZ(double value, double x, double y, double z) {
-        if (!smoothbeta_renderingTerrain)
-            return value;
-        smoothbeta_pos.set((float) x, (float) y, (float) z, 1.0f);
-        smoothbeta_pos.transform(smoothbeta_terrainConext.matrices().peek().getPositionMatrix());
-        return smoothbeta_pos.getZ();
+        if (!smoothbeta_renderingTerrain) return;
+        smoothbeta_chunkRenderer.smoothbeta_getCurrentBuffer().upload(byteBuffer);
+        clear();
+        ci.cancel();
     }
 
     @ModifyConstant(

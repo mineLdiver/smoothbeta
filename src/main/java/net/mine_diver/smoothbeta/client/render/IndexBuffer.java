@@ -12,7 +12,7 @@ import static net.mine_diver.smoothbeta.SmoothBeta.LOGGER;
 
 @Environment(EnvType.CLIENT)
 public final class IndexBuffer {
-    private static final IndexBuffer sharedSequential = new IndexBuffer(1, 1, java.util.function.IntConsumer::accept);;
+    private static final IndexBuffer sharedSequential = new IndexBuffer(1, 1, java.util.function.IntConsumer::accept);
     private static final IndexBuffer sharedSequentialQuad = new IndexBuffer(4, 6, (intConsumer, i) -> {
         intConsumer.accept(i);
         intConsumer.accept(i + 1);

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(ArsenicTessellator.class)
-public class ArsenicTessellatorMixin {
+class ArsenicTessellatorMixin {
     @Shadow @Final private Tessellator tessellator;
 
     @ModifyConstant(

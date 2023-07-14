@@ -3,28 +3,23 @@ package net.mine_diver.smoothbeta.mixin.client.multidraw.compat.stationrenderera
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
 import net.minecraft.client.render.Tessellator;
 import net.modificationstation.stationapi.api.client.render.model.BakedQuad;
-import net.modificationstation.stationapi.api.util.math.Vector4f;
 import net.modificationstation.stationapi.impl.client.render.StationTessellatorImpl;
 import net.modificationstation.stationapi.mixin.render.client.TessellatorAccessor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(StationTessellatorImpl.class)
-public abstract class StationTessellatorImplMixin {
+abstract class StationTessellatorImplMixin {
     @Shadow @Final private Tessellator self;
 
     @Shadow @Final private int[] fastVertexData;
     @Shadow @Final private TessellatorAccessor access;
 
     @Shadow public abstract void ensureBufferCapacity(int criticalCapacity);
-
-    @Unique
-    private final Vector4f smoothbeta_pos = new Vector4f();
 
     @Inject(
             method = "quad",
@@ -34,11 +29,6 @@ public abstract class StationTessellatorImplMixin {
     )
     private void smoothbeta_renderTerrain(BakedQuad quad, float x, float y, float z, int colour0, int colour1, int colour2, int colour3, float normalX, float normalY, float normalZ, boolean spreadUV, CallbackInfo ci) {
         if (((SmoothTessellator) self).smoothbeta_isRenderingTerrain()) {
-            smoothbeta_pos.set(x, y, z, 1);
-            smoothbeta_pos.transform(((SmoothTessellator) self).smoothbeta_getTerrainContext().matrices().peek().getPositionMatrix());
-            x = smoothbeta_pos.getX();
-            y = smoothbeta_pos.getY();
-            z = smoothbeta_pos.getZ();
             byte by = (byte)(normalX * 128.0f);
             byte by2 = (byte)(normalY * 127.0f);
             byte by3 = (byte)(normalZ * 127.0f);

@@ -7,7 +7,6 @@ import net.modificationstation.stationapi.api.registry.Identifier;
 import net.modificationstation.stationapi.api.resource.IdentifiableResourceReloadListener;
 import net.modificationstation.stationapi.api.resource.ResourceManager;
 import net.modificationstation.stationapi.api.util.profiler.Profiler;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import static net.mine_diver.smoothbeta.SmoothBeta.MODID;
 public class Shaders implements IdentifiableResourceReloadListener {
     public static final Identifier ID = MODID.id("shaders");
 
-    @Nullable
     private static Shader terrainShader;
 
     @EventListener
@@ -74,7 +72,6 @@ public class Shaders implements IdentifiableResourceReloadListener {
         profiler.endTick();
     }
 
-    @Nullable
     public static Shader getTerrainShader() {
         return terrainShader;
     }

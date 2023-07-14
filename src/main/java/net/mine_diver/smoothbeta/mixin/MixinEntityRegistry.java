@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRegistry.class)
-public class MixinEntityRegistry {
+class MixinEntityRegistry {
 
     @Inject(
             method = "register(Ljava/lang/Class;Ljava/lang/String;I)V",

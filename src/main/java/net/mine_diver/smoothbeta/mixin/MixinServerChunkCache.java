@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.*;
+import java.util.Map;
 
 @Mixin(ServerChunkCache.class)
-public abstract class MixinServerChunkCache {
+abstract class MixinServerChunkCache {
 
     @Shadow private Map<Integer, Chunk> serverChunkCache;
 
