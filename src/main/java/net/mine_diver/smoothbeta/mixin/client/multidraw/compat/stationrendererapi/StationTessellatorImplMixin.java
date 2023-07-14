@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin.client.multidraw.compat.arsenic;
+package net.mine_diver.smoothbeta.mixin.client.multidraw.compat.stationrendererapi;
 
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
 import net.minecraft.client.render.Tessellator;

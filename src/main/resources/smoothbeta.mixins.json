@@ -11,7 +11,8 @@
     "client.multidraw.RenderListAccessor",
     "client.multidraw.TessellatorMixin",
     "client.multidraw.WorldRendererMixin",
-    "client.multidraw.compat.arsenic.StationTessellatorImplMixin"
+    "client.multidraw.compat.stationrendererapi.StationTessellatorImplMixin",
+    "client.multidraw.compat.arsenic.ArsenicTessellatorMixin"
   ],
   "mixins": [
     "MixinEntityRegistry",
