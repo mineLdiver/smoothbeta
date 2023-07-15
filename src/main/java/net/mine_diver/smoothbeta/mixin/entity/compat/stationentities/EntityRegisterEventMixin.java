@@ -15,7 +15,8 @@ public class EntityRegisterEventMixin {
             method = "registerNoID",
             at = @At("HEAD"),
             index = 1,
-            argsOnly = true
+            argsOnly = true,
+            remap = false
     )
     private BiConsumer<Class<? extends EntityBase>, String> smoothbeta_registerNoID(BiConsumer<Class<? extends EntityBase>, String> registerNoID) {
         return registerNoID.andThen(SmoothEntityRegistry::registerNoID);

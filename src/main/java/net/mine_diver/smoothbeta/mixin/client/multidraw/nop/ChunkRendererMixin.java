@@ -15,7 +15,8 @@ public class ChunkRendererMixin {
             },
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glNewList(II)V"
+                    target = "Lorg/lwjgl/opengl/GL11;glNewList(II)V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glNewList(int list, int mode) {}
@@ -47,7 +48,8 @@ public class ChunkRendererMixin {
             },
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glEndList()V"
+                    target = "Lorg/lwjgl/opengl/GL11;glEndList()V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glEndList() {}
@@ -59,7 +61,8 @@ public class ChunkRendererMixin {
             },
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glTranslatef(FFF)V"
+                    target = "Lorg/lwjgl/opengl/GL11;glTranslatef(FFF)V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glTranslatef(float x, float y, float z) {}
@@ -68,7 +71,8 @@ public class ChunkRendererMixin {
             method = "method_296",
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glPushMatrix()V"
+                    target = "Lorg/lwjgl/opengl/GL11;glPushMatrix()V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glPushMatrix() {}
@@ -77,7 +81,8 @@ public class ChunkRendererMixin {
             method = "method_296",
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glScalef(FFF)V"
+                    target = "Lorg/lwjgl/opengl/GL11;glScalef(FFF)V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glScalef(float x, float y, float z) {}
@@ -86,7 +91,8 @@ public class ChunkRendererMixin {
             method = "method_296",
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glPopMatrix()V"
+                    target = "Lorg/lwjgl/opengl/GL11;glPopMatrix()V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glPopMatrix() {}
@@ -95,7 +101,8 @@ public class ChunkRendererMixin {
             method = "method_303",
             at = @At(
                     value = "INVOKE",
-                    target = "Lorg/lwjgl/opengl/GL11;glCallList(I)V"
+                    target = "Lorg/lwjgl/opengl/GL11;glCallList(I)V",
+                    remap = false
             )
     )
     private void smoothbeta_nop_GL11_glCallList(int list) {}
