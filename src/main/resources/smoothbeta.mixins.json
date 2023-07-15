@@ -16,8 +16,9 @@
     "client.multidraw.nop.ChunkRendererMixin"
   ],
   "mixins": [
-    "MixinEntityRegistry",
-    "MixinServerChunkCache"
+    "MixinServerChunkCache",
+    "entity.MixinEntityRegistry",
+    "entity.compat.stationentities.EntityRegisterEventMixin"
   ],
   "injectors": {
     "defaultRequire": 1

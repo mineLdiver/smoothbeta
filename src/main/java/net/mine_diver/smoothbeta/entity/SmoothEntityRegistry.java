@@ -9,11 +9,14 @@ import net.minecraft.level.Level;
 import net.minecraft.util.io.CompoundTag;
 import net.modificationstation.stationapi.api.util.Util;
 
-import java.lang.invoke.*;
-import java.util.*;
-import java.util.function.*;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
-import static java.lang.invoke.MethodType.*;
+import static java.lang.invoke.MethodType.methodType;
 
 public class SmoothEntityRegistry {
 
@@ -21,17 +24,34 @@ public class SmoothEntityRegistry {
     private static final Map<String, Function<Level, EntityBase>> STRING_ID_TO_CONSTRUCTOR = new HashMap<>();
     private static final Int2ObjectMap<Function<Level, EntityBase>> ID_TO_CONSTRUCTOR = Util.make(new Int2ObjectOpenHashMap<>(), map -> map.defaultReturnValue(EMPTY_CONSTRUCTOR));
 
-    public static void register(Class<? extends EntityBase> entityClass, String identifier, int id) throws Throwable {
+    private static Function<Level, EntityBase> findConstructor(Class<? extends EntityBase> entityClass) throws Throwable {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         MethodHandle mh = lookup.findConstructor(entityClass, methodType(void.class, Level.class));
         //noinspection unchecked
-        Function<Level, EntityBase> constructor = (Function<Level, EntityBase>) LambdaMetafactory.metafactory(
+        return (Function<Level, EntityBase>) LambdaMetafactory.metafactory(
                 lookup,
                 "apply", methodType(Function.class),
                 mh.type().generic(), mh, mh.type()
         ).getTarget().invokeExact();
+    }
+
+    public static void register(Class<? extends EntityBase> entityClass, String identifier, int id) {
+        Function<Level, EntityBase> constructor;
+        try {
+            constructor = findConstructor(entityClass);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
         STRING_ID_TO_CONSTRUCTOR.put(identifier, constructor);
         ID_TO_CONSTRUCTOR.put(id, constructor);
+    }
+
+    public static void registerNoID(Class<? extends EntityBase> entityClass, String identifier) {
+        try {
+            STRING_ID_TO_CONSTRUCTOR.put(identifier, findConstructor(entityClass));
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static EntityBase create(String identifier, Level level) {

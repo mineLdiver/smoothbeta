@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin;
+package net.mine_diver.smoothbeta.mixin.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +20,7 @@ class MixinEntityRegistry {
             method = "register(Ljava/lang/Class;Ljava/lang/String;I)V",
             at = @At("RETURN")
     )
-    private static void registerConstructors(Class<? extends EntityBase> entityClass, String identifier, int id, CallbackInfo ci) throws Throwable {
+    private static void registerConstructors(Class<? extends EntityBase> entityClass, String identifier, int id, CallbackInfo ci) {
         SmoothEntityRegistry.register(entityClass, identifier, id);
     }
 
