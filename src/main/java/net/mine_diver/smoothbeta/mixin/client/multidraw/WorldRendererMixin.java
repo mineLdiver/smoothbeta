@@ -1,11 +1,11 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.mine_diver.smoothbeta.client.render.*;
-import net.minecraft.class_214;
+import net.minecraft.class_472;
 import net.minecraft.class_66;
-import net.minecraft.client.render.RenderList;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.entity.Living;
+import net.minecraft.client.util.GlAllocationUtils;
+import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
@@ -24,7 +24,7 @@ import java.nio.FloatBuffer;
 
 @Mixin(WorldRenderer.class)
 abstract class WorldRendererMixin implements SmoothWorldRenderer {
-    @Shadow private RenderList[] field_1794;
+    @Shadow private class_472[] field_1794;
 
     @Unique
     private VboPool smoothbeta_vboPool;
@@ -49,10 +49,10 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             method = "<init>",
             at = @At(
                     value = "NEW",
-                    target = "()Lnet/minecraft/client/render/RenderList;"
+                    target = "()Lnet/minecraft/class_472;"
             )
     )
-    private RenderList smoothbeta_injectRenderRegion() {
+    private class_472 smoothbeta_injectRenderRegion() {
         return new RenderRegion((WorldRenderer) (Object) this);
     }
 
@@ -60,12 +60,12 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             method = "method_1542(IIID)I",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/RenderList;method_1910(I)V",
+                    target = "Lnet/minecraft/class_472;method_1910(I)V",
                     shift = At.Shift.BEFORE
             ),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void smoothbeta_addBufferToRegion(int j, int k, int d, double par4, CallbackInfoReturnable<Integer> cir, int var6, Living var7, double var8, double var10, double var12, int var14, int var15, class_66 var16, int var17) {
+    private void smoothbeta_addBufferToRegion(int j, int k, int d, double par4, CallbackInfoReturnable<Integer> cir, int var6, LivingEntity var7, double var8, double var10, double var12, int var14, int var15, class_66 var16, int var17) {
         ((RenderRegion) this.field_1794[var17]).addBuffer(((SmoothChunkRenderer) var16).smoothbeta_getBuffer(d));
     }
 
@@ -73,16 +73,16 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             method = "method_1542(IIID)I",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/RenderList;method_1910(I)V"
+                    target = "Lnet/minecraft/class_472;method_1910(I)V"
             )
     )
-    private void smoothbeta_stopCallingRenderList(RenderList instance, int i) {}
+    private void smoothbeta_stopCallingRenderList(class_472 instance, int i) {}
 
     @Unique
     private final FloatBuffer
-            smoothbeta_modelViewMatrix = class_214.method_746(16),
-            smoothbeta_projectionMatrix = class_214.method_746(16),
-            smoothbeta_fogColor = class_214.method_746(16);
+            smoothbeta_modelViewMatrix = GlAllocationUtils.allocateFloatBuffer(16),
+            smoothbeta_projectionMatrix = GlAllocationUtils.allocateFloatBuffer(16),
+            smoothbeta_fogColor = GlAllocationUtils.allocateFloatBuffer(16);
 
     @Inject(
             method = "method_1540(ID)V",

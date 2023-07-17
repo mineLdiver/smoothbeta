@@ -2,7 +2,7 @@ package net.mine_diver.smoothbeta.mixin.client;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.entity.EntityBase;
+import net.minecraft.entity.Entity;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Mixin(EntityRenderDispatcher.class)
 class MixinEntityRendererDispatcher {
 
-    @Shadow private Map<Class<? extends EntityBase>, EntityRenderer> renderers;
+    @Shadow private Map<Class<? extends Entity>, EntityRenderer> renderers;
 
     @Redirect(
             method = "<init>()V",
@@ -25,7 +25,7 @@ class MixinEntityRendererDispatcher {
                     opcode = Opcodes.PUTFIELD
             )
     )
-    private void overrideMap(EntityRenderDispatcher entityRenderDispatcher, Map<Class<? extends EntityBase>, EntityRenderer> value) {
+    private void overrideMap(EntityRenderDispatcher entityRenderDispatcher, Map<Class<? extends Entity>, EntityRenderer> value) {
         renderers = new IdentityHashMap<>();
     }
 }

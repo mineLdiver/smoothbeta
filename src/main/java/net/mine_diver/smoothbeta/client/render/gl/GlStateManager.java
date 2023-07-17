@@ -3,7 +3,7 @@ package net.mine_diver.smoothbeta.client.render.gl;
 import com.google.common.base.Charsets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.class_214;
+import net.minecraft.client.util.GlAllocationUtils;
 import net.modificationstation.stationapi.api.util.Util;
 import org.lwjgl.opengl.*;
 
@@ -32,7 +32,7 @@ public class GlStateManager {
             stringBuilder.append(string);
         }
         byte[] bs = stringBuilder.toString().getBytes(Charsets.UTF_8);
-        ByteBuffer byteBuffer = class_214.method_744(bs.length + 1);
+        ByteBuffer byteBuffer = GlAllocationUtils.allocateByteBuffer(bs.length + 1);
         byteBuffer.put(bs);
         byteBuffer.put((byte)0);
         byteBuffer.flip();

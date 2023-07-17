@@ -2,12 +2,8 @@ package net.mine_diver.smoothbeta.mixin;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.level.Level;
-import net.minecraft.level.chunk.Chunk;
-import net.minecraft.level.chunk.ChunkIO;
-import net.minecraft.level.chunk.ServerChunkCache;
-import net.minecraft.level.source.LevelSource;
-import net.minecraft.util.maths.Vec2i;
+import net.minecraft.*;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,23 +14,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
-@Mixin(ServerChunkCache.class)
+@Mixin(class_326.class)
 abstract class MixinServerChunkCache {
 
-    @Shadow private Map<Integer, Chunk> serverChunkCache;
+    @Shadow private Map<Integer, class_43> field_1229;
 
-    @Shadow public abstract Chunk loadChunk(int chunkX, int chunkZ);
+    @Shadow public abstract class_43 method_1807(int chunkX, int chunkZ);
 
     @Unique
-    private Int2ObjectMap<Chunk> smoothbeta$serverChunkCache;
+    private Int2ObjectMap<class_43> smoothbeta$serverChunkCache;
 
     @Inject(
-            method = "<init>(Lnet/minecraft/level/Level;Lnet/minecraft/level/chunk/ChunkIO;Lnet/minecraft/level/source/LevelSource;)V",
+            method = "<init>",
             at = @At("RETURN")
     )
-    private void getMap(Level level, ChunkIO arg1, LevelSource arg2, CallbackInfo ci) {
+    private void getMap(World level, class_243 arg1, class_51 arg2, CallbackInfo ci) {
         smoothbeta$serverChunkCache = new Int2ObjectOpenHashMap<>();
-        serverChunkCache = smoothbeta$serverChunkCache;
+        field_1229 = smoothbeta$serverChunkCache;
     }
 
     // TODO: replace with ASM
@@ -43,8 +39,8 @@ abstract class MixinServerChunkCache {
      * @author mine_diver
      */
     @Overwrite
-    public boolean isChunkLoaded(int chunkX, int chunkZ) {
-        return smoothbeta$serverChunkCache.containsKey(Vec2i.hash(chunkX, chunkZ));
+    public boolean method_1802(int chunkX, int chunkZ) {
+        return smoothbeta$serverChunkCache.containsKey(class_515.method_1854(chunkX, chunkZ));
     }
 
     // TODO: replace with ASM
@@ -53,8 +49,8 @@ abstract class MixinServerChunkCache {
      * @author mine_diver
      */
     @Overwrite
-    public Chunk getChunk(int chunkX, int chunkZ) {
-        Chunk var3 = smoothbeta$serverChunkCache.get(Vec2i.hash(chunkX, chunkZ));
-        return var3 == null ? loadChunk(chunkX, chunkZ) : var3;
+    public class_43 method_1806(int chunkX, int chunkZ) {
+        class_43 var3 = smoothbeta$serverChunkCache.get(class_515.method_1854(chunkX, chunkZ));
+        return var3 == null ? method_1807(chunkX, chunkZ) : var3;
     }
 }

@@ -3,7 +3,7 @@ package net.mine_diver.smoothbeta.client.render;
 import net.mine_diver.smoothbeta.client.render.gl.GlUniform;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
 import net.mine_diver.smoothbeta.mixin.client.multidraw.RenderListAccessor;
-import net.minecraft.client.render.RenderList;
+import net.minecraft.class_472;
 import net.minecraft.client.render.WorldRenderer;
 import net.modificationstation.stationapi.api.util.math.Vec3f;
 
@@ -11,7 +11,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderRegion extends RenderList {
+public class RenderRegion extends class_472 {
 
     private final RenderListAccessor _super = (RenderListAccessor) this;
     private final SmoothWorldRenderer stationWorldRenderer;

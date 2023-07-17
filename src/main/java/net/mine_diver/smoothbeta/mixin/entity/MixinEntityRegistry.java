@@ -3,24 +3,24 @@ package net.mine_diver.smoothbeta.mixin.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mine_diver.smoothbeta.entity.SmoothEntityRegistry;
-import net.minecraft.entity.EntityBase;
-import net.minecraft.entity.EntityRegistry;
-import net.minecraft.level.Level;
-import net.minecraft.util.io.CompoundTag;
+import net.minecraft.class_206;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntityRegistry.class)
+@Mixin(class_206.class)
 class MixinEntityRegistry {
 
     @Inject(
-            method = "register(Ljava/lang/Class;Ljava/lang/String;I)V",
+            method = "method_731",
             at = @At("RETURN")
     )
-    private static void registerConstructors(Class<? extends EntityBase> entityClass, String identifier, int id, CallbackInfo ci) {
+    private static void registerConstructors(Class<? extends Entity> entityClass, String identifier, int id, CallbackInfo ci) {
         SmoothEntityRegistry.register(entityClass, identifier, id);
     }
 
@@ -29,8 +29,8 @@ class MixinEntityRegistry {
      * @author mine_diver
      */
     @Overwrite
-    public static EntityBase create(String identifier, Level level) {
-        return SmoothEntityRegistry.create(identifier, level);
+    public static Entity method_732(String identifier, World world) {
+        return SmoothEntityRegistry.create(identifier, world);
     }
 
     /**
@@ -38,8 +38,8 @@ class MixinEntityRegistry {
      * @author mine_diver
      */
     @Overwrite
-    public static EntityBase create(CompoundTag tag, Level level) {
-        return SmoothEntityRegistry.create(tag, level);
+    public static Entity method_730(NbtCompound compound, World world) {
+        return SmoothEntityRegistry.create(compound, world);
     }
 
     /**
@@ -48,7 +48,7 @@ class MixinEntityRegistry {
      */
     @Overwrite
     @Environment(EnvType.CLIENT)
-    public static EntityBase create(int id, Level level) {
-        return SmoothEntityRegistry.create(id, level);
+    public static Entity method_735(int id, World world) {
+        return SmoothEntityRegistry.create(id, world);
     }
 }

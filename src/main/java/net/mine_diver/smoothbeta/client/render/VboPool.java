@@ -3,7 +3,7 @@ package net.mine_diver.smoothbeta.client.render;
 import net.fabricmc.loader.api.FabricLoader;
 import net.mine_diver.smoothbeta.client.render.gl.GlStateManager;
 import net.mine_diver.smoothbeta.mixin.client.MinecraftAccessor;
-import net.minecraft.class_214;
+import net.minecraft.client.util.GlAllocationUtils;
 import net.modificationstation.stationapi.api.util.collection.LinkedList;
 import org.lwjgl.opengl.*;
 
@@ -23,7 +23,7 @@ public class VboPool implements AutoCloseable {
     private Pos compactPosLast = null;
     private int curBaseInstance;
 
-    private IntBuffer bufferIndirect = class_214.method_745(this.capacity * 5);
+    private IntBuffer bufferIndirect = GlAllocationUtils.allocateIntBuffer(this.capacity * 5);
     private final int vertexBytes;
     private VertexFormat.DrawMode drawMode = VertexFormat.DrawMode.QUADS;
 
@@ -175,7 +175,7 @@ public class VboPool implements AutoCloseable {
         GL15.glBindBuffer(GL31.GL_COPY_READ_BUFFER, 0);
         GL15.glBindBuffer(GL31.GL_COPY_WRITE_BUFFER, 0);
         GL15.glDeleteBuffers(this.vertexBufferId);
-        this.bufferIndirect = class_214.method_745(i * 5);
+        this.bufferIndirect = GlAllocationUtils.allocateIntBuffer(i * 5);
         this.vertexBufferId = l;
         this.capacity = i;
     }

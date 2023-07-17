@@ -2,7 +2,7 @@ package net.mine_diver.smoothbeta.client.render.gl;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.class_214;
+import net.minecraft.client.util.GlAllocationUtils;
 import net.modificationstation.stationapi.api.util.math.Vec3f;
 import org.lwjgl.opengl.GL20;
 
@@ -37,11 +37,11 @@ public class GlUniform extends Uniform implements AutoCloseable {
 		this.count = count;
 		this.dataType = dataType;
 		if (dataType <= INT4) {
-			this.intData = class_214.method_745(count);
+			this.intData = GlAllocationUtils.allocateIntBuffer(count);
 			this.floatData = null;
 		} else {
 			this.intData = null;
-			this.floatData = class_214.method_746(count);
+			this.floatData = GlAllocationUtils.allocateFloatBuffer(count);
 		}
 
 		this.location = -1;

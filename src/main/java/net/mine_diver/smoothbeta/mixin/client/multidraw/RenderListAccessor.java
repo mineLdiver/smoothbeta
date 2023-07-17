@@ -1,12 +1,12 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
-import net.minecraft.client.render.RenderList;
+import net.minecraft.class_472;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.nio.IntBuffer;
 
-@Mixin(RenderList.class)
+@Mixin(class_472.class)
 public interface RenderListAccessor {
     @Accessor("field_2486")
     void smoothbeta_setField_2486(IntBuffer buffer);

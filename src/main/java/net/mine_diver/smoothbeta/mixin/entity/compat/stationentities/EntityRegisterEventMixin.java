@@ -1,7 +1,7 @@
 package net.mine_diver.smoothbeta.mixin.entity.compat.stationentities;
 
 import net.mine_diver.smoothbeta.entity.SmoothEntityRegistry;
-import net.minecraft.entity.EntityBase;
+import net.minecraft.entity.Entity;
 import net.modificationstation.stationapi.api.event.entity.EntityRegister;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +18,7 @@ public class EntityRegisterEventMixin {
             argsOnly = true,
             remap = false
     )
-    private BiConsumer<Class<? extends EntityBase>, String> smoothbeta_registerNoID(BiConsumer<Class<? extends EntityBase>, String> registerNoID) {
+    private BiConsumer<Class<? extends Entity>, String> smoothbeta_registerNoID(BiConsumer<Class<? extends Entity>, String> registerNoID) {
         return registerNoID.andThen(SmoothEntityRegistry::registerNoID);
     }
 }

@@ -6,12 +6,12 @@ import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
 import net.mine_diver.smoothbeta.client.render.SmoothWorldRenderer;
 import net.mine_diver.smoothbeta.client.render.VboPool;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.class_13;
+import net.minecraft.class_42;
 import net.minecraft.class_66;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.block.BlockRenderer;
-import net.minecraft.level.WorldPopulationRegion;
-import net.minecraft.tileentity.TileEntityBase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 
 @Mixin(class_66.class)
 class ChunkRendererMixin implements SmoothChunkRenderer {
-    @Shadow private static Tessellator tesselator;
+    @Shadow private static Tessellator field_226;
 
     @Shadow public boolean[] field_244;
     @Shadow public int field_240;
@@ -63,29 +63,29 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
             method = "method_296",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Tessellator;start()V"
+                    target = "Lnet/minecraft/client/render/Tessellator;startQuads()V"
             ),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void smoothbeta_startRenderingTerrain(
             CallbackInfo ci,
-            int var1, int var2, int var3, int var4, int var5, int var6, HashSet<TileEntityBase> var7, int var8, WorldPopulationRegion var9, BlockRenderer var10, int var11
+            int var1, int var2, int var3, int var4, int var5, int var6, HashSet<BlockEntity> var7, int var8, class_42 var9, class_13 var10, int var11
     ) {
         smoothbeta_currentBufferIndex = var11;
-        ((SmoothTessellator) tesselator).smoothbeta_startRenderingTerrain(this);
+        ((SmoothTessellator) field_226).smoothbeta_startRenderingTerrain(this);
     }
 
     @Inject(
             method = "method_296",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/Tessellator;setOffset(DDD)V",
+                    target = "Lnet/minecraft/client/render/Tessellator;translate(DDD)V",
                     shift = At.Shift.AFTER,
                     ordinal = 0
             )
     )
     private void smoothbeta_offsetBufferData(CallbackInfo ci) {
-        tesselator.addOffset(this.field_240, this.field_241, this.field_242);
+        field_226.translate(this.field_240, this.field_241, this.field_242);
     }
 
     @Inject(
@@ -98,6 +98,6 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     )
     private void smoothbeta_stopRenderingTerrain(CallbackInfo ci) {
         smoothbeta_currentBufferIndex = -1;
-        ((SmoothTessellator) tesselator).smoothbeta_stopRenderingTerrain();
+        ((SmoothTessellator) field_226).smoothbeta_stopRenderingTerrain();
     }
 }

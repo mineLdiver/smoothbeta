@@ -1,8 +1,8 @@
 package net.mine_diver.smoothbeta.mixin.client;
 
-import net.minecraft.client.render.entity.TileEntityRenderDispatcher;
-import net.minecraft.client.render.tileentity.TileEntityRenderer;
-import net.minecraft.tileentity.TileEntityBase;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,20 +12,20 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-@Mixin(TileEntityRenderDispatcher.class)
+@Mixin(BlockEntityRenderDispatcher.class)
 class MixinTileEntityRenderDispatcher {
 
-    @Shadow private Map<Class<? extends TileEntityBase>, TileEntityRenderer> customRenderers;
+    @Shadow private Map<Class<? extends BlockEntity>, BlockEntityRenderer> field_1564;
 
     @Redirect(
             method = "<init>()V",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/render/entity/TileEntityRenderDispatcher;customRenderers:Ljava/util/Map;",
+                    target = "Lnet/minecraft/client/render/block/entity/BlockEntityRenderDispatcher;field_1564:Ljava/util/Map;",
                     opcode = Opcodes.PUTFIELD
             )
     )
-    private void overrideMap(TileEntityRenderDispatcher instance, Map<Class<? extends TileEntityBase>, TileEntityRenderer> value) {
-        customRenderers = new IdentityHashMap<>();
+    private void overrideMap(BlockEntityRenderDispatcher instance, Map<Class<? extends BlockEntity>, BlockEntityRenderer> value) {
+        field_1564 = new IdentityHashMap<>();
     }
 }

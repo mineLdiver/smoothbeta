@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 
 @Mixin(Tessellator.class)
 abstract class TessellatorMixin implements SmoothTessellator {
-    @Shadow protected abstract void clear();
+    @Shadow protected abstract void reset();
 
     @Shadow private ByteBuffer byteBuffer;
     @Unique
@@ -55,12 +55,12 @@ abstract class TessellatorMixin implements SmoothTessellator {
     private void smoothbeta_uploadTerrain(CallbackInfo ci) {
         if (!smoothbeta_renderingTerrain) return;
         smoothbeta_chunkRenderer.smoothbeta_getCurrentBuffer().upload(byteBuffer);
-        clear();
+        reset();
         ci.cancel();
     }
 
     @ModifyConstant(
-            method = "addVertex",
+            method = "vertex(DDD)V",
             constant = @Constant(intValue = 7)
     )
     private int smoothbeta_prohibitExtraVertices(int constant) {
@@ -68,7 +68,7 @@ abstract class TessellatorMixin implements SmoothTessellator {
     }
 
     @ModifyConstant(
-            method = "addVertex",
+            method = "vertex(DDD)V",
             constant = @Constant(
                     intValue = 8,
                     ordinal = 2

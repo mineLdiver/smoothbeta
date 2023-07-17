@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Minecraft.class)
 public interface MinecraftAccessor {
-    @Invoker("printOpenGLError")
+    @Invoker("logGlError")
     void smoothbeta_printOpenGLError(String location);
 }

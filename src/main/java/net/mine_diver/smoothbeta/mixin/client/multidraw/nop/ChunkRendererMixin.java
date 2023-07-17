@@ -1,7 +1,7 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw.nop;
 
 import net.minecraft.class_66;
-import net.minecraft.util.maths.Box;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -25,10 +25,10 @@ public class ChunkRendererMixin {
             method = "method_298",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/util/maths/Box;createButWasteMemory(DDDDDD)Lnet/minecraft/util/maths/Box;"
+                    target = "Lnet/minecraft/util/math/Box;getOrCreate(DDDDDD)Lnet/minecraft/util/math/Box;"
             )
     )
-    private Box smoothbeta_nop_Box_createButWasteMemory(double d, double e, double f, double g, double h, double i) {
+    private Box smoothbeta_nop_Box_getOrCreate(double d, double e, double f, double g, double h, double i) {
         return null;
     }
 
@@ -36,7 +36,7 @@ public class ChunkRendererMixin {
             method = "method_298",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/entity/ItemRenderer;method_2024(Lnet/minecraft/util/maths/Box;)V"
+                    target = "Lnet/minecraft/client/render/item/ItemRenderer;method_2024(Lnet/minecraft/util/math/Box;)V"
             )
     )
     private void smoothbeta_nop_ItemRenderer_method_2024(Box box) {}
