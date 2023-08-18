@@ -47,10 +47,6 @@ public class Shader implements GlShader, AutoCloseable {
 			modelViewMat,
 			projectionMat,
 			fogMode,
-			fogDensity,
-			fogStart,
-			fogEnd,
-			fogColor,
 			chunkOffset;
 
 	public Shader(ResourceFactory factory, String name, VertexFormat format) throws IOException {
@@ -135,10 +131,6 @@ public class Shader implements GlShader, AutoCloseable {
 		this.modelViewMat = this.getUniform("ModelViewMat");
 		this.projectionMat = this.getUniform("ProjMat");
 		this.fogMode = this.getUniform("FogMode");
-		this.fogDensity = this.getUniform("FogDensity");
-		this.fogStart = this.getUniform("FogStart");
-		this.fogEnd = this.getUniform("FogEnd");
-		this.fogColor = this.getUniform("FogColor");
 		this.chunkOffset = this.getUniform("ChunkOffset");
 	}
 

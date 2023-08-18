@@ -81,8 +81,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
     @Unique
     private final FloatBuffer
             smoothbeta_modelViewMatrix = GlAllocationUtils.allocateFloatBuffer(16),
-            smoothbeta_projectionMatrix = GlAllocationUtils.allocateFloatBuffer(16),
-            smoothbeta_fogColor = GlAllocationUtils.allocateFloatBuffer(16);
+            smoothbeta_projectionMatrix = GlAllocationUtils.allocateFloatBuffer(16);
 
     @Inject(
             method = "method_1540(ID)V",
@@ -105,15 +104,6 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             case GL11.GL_LINEAR -> 2;
             default -> throw new IllegalStateException("Unexpected value: " + GL11.glGetInteger(GL11.GL_FOG_MODE));
         });
-
-        shader.fogDensity.set(GL11.glGetFloat(GL11.GL_FOG_DENSITY));
-
-        shader.fogStart.set(GL11.glGetFloat(GL11.GL_FOG_START));
-
-        shader.fogEnd.set(GL11.glGetFloat(GL11.GL_FOG_END));
-
-        GL11.glGetFloat(GL11.GL_FOG_COLOR, smoothbeta_fogColor.clear());
-        shader.fogColor.set(smoothbeta_fogColor.position(0).limit(4));
 
         shader.bind();
     }
