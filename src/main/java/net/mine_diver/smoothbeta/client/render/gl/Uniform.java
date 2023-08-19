@@ -6,8 +6,6 @@ import net.modificationstation.stationapi.api.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class Uniform {
-	public void set(float value1) {}
-
 	public void set(float value1, float value2, float value3) {}
 
 	public void setForDataType(float value1, float value2, float value3, float value4) {}

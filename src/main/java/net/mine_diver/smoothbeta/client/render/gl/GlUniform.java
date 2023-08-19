@@ -83,12 +83,6 @@ public class GlUniform extends Uniform implements AutoCloseable {
 		return this.name;
 	}
 
-	public final void set(float value1) {
-		this.floatData.position(0);
-		this.floatData.put(0, value1);
-		this.markStateDirty();
-	}
-
 	public final void set(float value1, float value2, float value3) {
 		this.floatData.position(0);
 		this.floatData.put(0, value1);
