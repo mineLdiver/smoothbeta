@@ -15,11 +15,11 @@ import java.util.Map;
 public class Program {
 
 	private static final int MAX_LOG_LENGTH = 0x8000;
-	private final Program.Type shaderType;
+	private final Type shaderType;
 	private final String name;
 	private int shaderRef;
 
-	protected Program(Program.Type shaderType, int shaderRef, String name) {
+	protected Program(Type shaderType, int shaderRef, String name) {
 		this.shaderType = shaderType;
 		this.shaderRef = shaderRef;
 		this.name = name;
@@ -41,14 +41,14 @@ public class Program {
 		return this.name;
 	}
 
-	public static Program createFromResource(Program.Type type, String name, InputStream stream, String domain, GLImportProcessor loader) throws IOException {
+	public static Program createFromResource(Type type, String name, InputStream stream, String domain, GLImportProcessor loader) throws IOException {
 		int i = loadProgram(type, name, stream, domain, loader);
 		Program program = new Program(type, i, name);
 		type.getProgramCache().put(name, program);
 		return program;
 	}
 
-	protected static int loadProgram(Program.Type type, String name, InputStream stream, String domain, GLImportProcessor loader) throws IOException {
+	protected static int loadProgram(Type type, String name, InputStream stream, String domain, GLImportProcessor loader) throws IOException {
 		String string = TextureUtil.readResourceAsString(stream);
 		if (string == null) throw new IOException("Could not load program " + type.getName());
 		else {

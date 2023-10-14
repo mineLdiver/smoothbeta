@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShaderParseException extends IOException {
-	private final List<ShaderParseException.JsonStackTrace> traces = Lists.newArrayList();
+	private final List<JsonStackTrace> traces = Lists.newArrayList();
 	private final String message;
 
 	public ShaderParseException(String message) {
-		this.traces.add(new ShaderParseException.JsonStackTrace());
+		this.traces.add(new JsonStackTrace());
 		this.message = message;
 	}
 
 	public ShaderParseException(String message, Throwable cause) {
 		super(cause);
-		this.traces.add(new ShaderParseException.JsonStackTrace());
+		this.traces.add(new JsonStackTrace());
 		this.message = message;
 	}
 
@@ -29,7 +29,7 @@ public class ShaderParseException extends IOException {
 
 	public void addFaultyFile(String path) {
 		this.traces.get(0).fileName = path;
-		this.traces.add(0, new ShaderParseException.JsonStackTrace());
+		this.traces.add(0, new JsonStackTrace());
 	}
 
 	public String getMessage() {

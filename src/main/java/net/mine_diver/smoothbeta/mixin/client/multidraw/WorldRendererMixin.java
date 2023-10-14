@@ -2,8 +2,8 @@ package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.mine_diver.smoothbeta.client.render.*;
 import net.minecraft.class_472;
-import net.minecraft.class_66;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.chunk.ChunkBuilder;
 import net.minecraft.client.util.GlAllocationUtils;
 import net.minecraft.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
@@ -65,7 +65,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             ),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void smoothbeta_addBufferToRegion(int j, int k, int d, double par4, CallbackInfoReturnable<Integer> cir, int var6, LivingEntity var7, double var8, double var10, double var12, int var14, int var15, class_66 var16, int var17) {
+    private void smoothbeta_addBufferToRegion(int j, int k, int d, double par4, CallbackInfoReturnable<Integer> cir, int var6, LivingEntity var7, double var8, double var10, double var12, int var14, int var15, ChunkBuilder var16, int var17) {
         ((RenderRegion) this.field_1794[var17]).addBuffer(((SmoothChunkRenderer) var16).smoothbeta_getBuffer(d));
     }
 

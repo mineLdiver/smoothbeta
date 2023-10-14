@@ -35,13 +35,13 @@ public abstract class GLImportProcessor {
 	 * <p>Imports are processed as per the description of this class.
 	 */
 	public List<String> readSource(String source) {
-		GLImportProcessor.Context context = new GLImportProcessor.Context();
+		Context context = new Context();
 		List<String> list = this.parseImports(source, context, "");
 		list.set(0, this.readImport(list.get(0), context.column));
 		return list;
 	}
 
-	private List<String> parseImports(String source, GLImportProcessor.Context context, String path) {
+	private List<String> parseImports(String source, Context context, String path) {
 		int i = context.line;
 		int j = 0;
 		String string = "";
@@ -100,7 +100,7 @@ public abstract class GLImportProcessor {
 	 * Converts a line known to contain an import into a fully-qualified
 	 * version of itself for insertion as a comment.
 	 */
-	private String extractVersion(String line, GLImportProcessor.Context context) {
+	private String extractVersion(String line, Context context) {
 		Matcher matcher = IMPORT_VERSION_PATTERN.matcher(line);
 		if (matcher.find() && method_36423(line, matcher)) {
 			context.column = Math.max(context.column, Integer.parseInt(matcher.group(2)));

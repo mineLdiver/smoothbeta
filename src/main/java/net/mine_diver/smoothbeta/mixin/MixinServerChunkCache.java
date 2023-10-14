@@ -2,7 +2,11 @@ package net.mine_diver.smoothbeta.mixin;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.*;
+import net.minecraft.class_243;
+import net.minecraft.class_326;
+import net.minecraft.class_43;
+import net.minecraft.class_51;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -40,7 +44,7 @@ abstract class MixinServerChunkCache {
      */
     @Overwrite
     public boolean method_1802(int chunkX, int chunkZ) {
-        return smoothbeta$serverChunkCache.containsKey(class_515.method_1854(chunkX, chunkZ));
+        return smoothbeta$serverChunkCache.containsKey(ChunkPos.hashCode(chunkX, chunkZ));
     }
 
     // TODO: replace with ASM
@@ -50,7 +54,7 @@ abstract class MixinServerChunkCache {
      */
     @Overwrite
     public class_43 method_1806(int chunkX, int chunkZ) {
-        class_43 var3 = smoothbeta$serverChunkCache.get(class_515.method_1854(chunkX, chunkZ));
+        class_43 var3 = smoothbeta$serverChunkCache.get(ChunkPos.hashCode(chunkX, chunkZ));
         return var3 == null ? method_1807(chunkX, chunkZ) : var3;
     }
 }

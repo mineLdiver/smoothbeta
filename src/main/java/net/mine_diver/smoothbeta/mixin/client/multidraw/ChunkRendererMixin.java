@@ -7,11 +7,11 @@ import net.mine_diver.smoothbeta.client.render.SmoothWorldRenderer;
 import net.mine_diver.smoothbeta.client.render.VboPool;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.class_13;
 import net.minecraft.class_42;
-import net.minecraft.class_66;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.chunk.ChunkBuilder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,14 +22,14 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.HashSet;
 
-@Mixin(class_66.class)
+@Mixin(ChunkBuilder.class)
 class ChunkRendererMixin implements SmoothChunkRenderer {
-    @Shadow private static Tessellator field_226;
+    @Shadow private static Tessellator tessellator;
 
-    @Shadow public boolean[] field_244;
-    @Shadow public int field_240;
-    @Shadow public int field_241;
-    @Shadow public int field_242;
+    @Shadow public boolean[] renderLayerEmpty;
+    @Shadow public int renderX;
+    @Shadow public int renderY;
+    @Shadow public int renderZ;
     @Unique
     private VertexBuffer[] smoothbeta_buffers;
     @Unique
@@ -52,7 +52,7 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
             at = @At("RETURN")
     )
     private void smoothbeta_init(CallbackInfo ci) {
-        smoothbeta_buffers = new VertexBuffer[field_244.length];
+        smoothbeta_buffers = new VertexBuffer[renderLayerEmpty.length];
         //noinspection deprecation
         VboPool pool = ((SmoothWorldRenderer) ((Minecraft) FabricLoader.getInstance().getGameInstance()).worldRenderer).smoothbeta_getTerrainVboPool();
         for (int i = 0; i < smoothbeta_buffers.length; i++)
@@ -60,7 +60,7 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     }
 
     @Inject(
-            method = "method_296",
+            method = "rebuild",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/render/Tessellator;startQuads()V"
@@ -69,14 +69,14 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     )
     private void smoothbeta_startRenderingTerrain(
             CallbackInfo ci,
-            int var1, int var2, int var3, int var4, int var5, int var6, HashSet<BlockEntity> var7, int var8, class_42 var9, class_13 var10, int var11
+            int var1, int var2, int var3, int var4, int var5, int var6, HashSet<BlockEntity> var7, int var8, class_42 var9, BlockRenderManager var10, int var11
     ) {
         smoothbeta_currentBufferIndex = var11;
-        ((SmoothTessellator) field_226).smoothbeta_startRenderingTerrain(this);
+        ((SmoothTessellator) tessellator).smoothbeta_startRenderingTerrain(this);
     }
 
     @Inject(
-            method = "method_296",
+            method = "rebuild",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/render/Tessellator;translate(DDD)V",
@@ -85,11 +85,11 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
             )
     )
     private void smoothbeta_offsetBufferData(CallbackInfo ci) {
-        field_226.translate(this.field_240, this.field_241, this.field_242);
+        tessellator.translate(this.renderX, this.renderY, this.renderZ);
     }
 
     @Inject(
-            method = "method_296",
+            method = "rebuild",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/render/Tessellator;draw()V",
@@ -98,6 +98,6 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     )
     private void smoothbeta_stopRenderingTerrain(CallbackInfo ci) {
         smoothbeta_currentBufferIndex = -1;
-        ((SmoothTessellator) field_226).smoothbeta_stopRenderingTerrain();
+        ((SmoothTessellator) tessellator).smoothbeta_stopRenderingTerrain();
     }
 }

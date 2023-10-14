@@ -3,8 +3,8 @@ package net.mine_diver.smoothbeta.mixin.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mine_diver.smoothbeta.entity.SmoothEntityRegistry;
-import net.minecraft.class_206;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,15 +13,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(class_206.class)
+@Mixin(EntityRegistry.class)
 class MixinEntityRegistry {
 
     @Inject(
-            method = "method_731",
+            method = "register",
             at = @At("RETURN")
     )
-    private static void registerConstructors(Class<? extends Entity> entityClass, String identifier, int id, CallbackInfo ci) {
-        SmoothEntityRegistry.register(entityClass, identifier, id);
+    private static void registerConstructors(Class<? extends Entity> entityClass, String id, int rawId, CallbackInfo ci) {
+        SmoothEntityRegistry.register(entityClass, id, rawId);
     }
 
     /**
@@ -29,8 +29,8 @@ class MixinEntityRegistry {
      * @author mine_diver
      */
     @Overwrite
-    public static Entity method_732(String identifier, World world) {
-        return SmoothEntityRegistry.create(identifier, world);
+    public static Entity create(String id, World world) {
+        return SmoothEntityRegistry.create(id, world);
     }
 
     /**
@@ -38,8 +38,8 @@ class MixinEntityRegistry {
      * @author mine_diver
      */
     @Overwrite
-    public static Entity method_730(NbtCompound compound, World world) {
-        return SmoothEntityRegistry.create(compound, world);
+    public static Entity getEntityFromNbt(NbtCompound nbt, World world) {
+        return SmoothEntityRegistry.create(nbt, world);
     }
 
     /**
@@ -48,7 +48,7 @@ class MixinEntityRegistry {
      */
     @Overwrite
     @Environment(EnvType.CLIENT)
-    public static Entity method_735(int id, World world) {
-        return SmoothEntityRegistry.create(id, world);
+    public static Entity create(int rawId, World world) {
+        return SmoothEntityRegistry.create(rawId, world);
     }
 }
