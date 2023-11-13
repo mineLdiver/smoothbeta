@@ -11,11 +11,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.mine_diver.smoothbeta.client.render.gl.*;
 import net.modificationstation.stationapi.api.client.texture.AbstractTexture;
-import net.modificationstation.stationapi.api.registry.Identifier;
 import net.modificationstation.stationapi.api.resource.Resource;
 import net.modificationstation.stationapi.api.resource.ResourceFactory;
-import net.modificationstation.stationapi.api.util.FileNameUtil;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.JsonHelper;
+import net.modificationstation.stationapi.api.util.PathUtil;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL13;
 
@@ -26,12 +26,12 @@ import java.io.Reader;
 import java.util.*;
 
 import static net.mine_diver.smoothbeta.SmoothBeta.LOGGER;
-import static net.mine_diver.smoothbeta.SmoothBeta.MODID;
+import static net.mine_diver.smoothbeta.SmoothBeta.NAMESPACE;
 
 @Environment(EnvType.CLIENT)
 public class Shader implements GlShader, AutoCloseable {
-	private static final String CORE_DIRECTORY = MODID + "/shaders/core/";
-	private static final String INCLUDE_DIRECTORY = MODID + "/shaders/include/";
+	private static final String CORE_DIRECTORY = NAMESPACE + "/shaders/core/";
+	private static final String INCLUDE_DIRECTORY = NAMESPACE + "/shaders/include/";
 	private static int activeShaderId;
 	private final Map<String, Object> samplers = new HashMap<>();
 	private final List<String> samplerNames = new ArrayList<>();
@@ -125,7 +125,7 @@ public class Shader implements GlShader, AutoCloseable {
 		}
 		catch (Exception exception4) {
 			ShaderParseException shaderParseException4 = ShaderParseException.wrap(exception4);
-			shaderParseException4.addFaultyFile(identifier.id);
+			shaderParseException4.addFaultyFile(identifier.path);
 			throw shaderParseException4;
 		}
 		this.modelViewMat = this.getUniform("ModelViewMat");
@@ -141,14 +141,14 @@ public class Shader implements GlShader, AutoCloseable {
 			String string = CORE_DIRECTORY + name + type.getFileExtension();
 			Resource resource = factory.getResourceOrThrow(Identifier.of(string));
 			try (InputStream inputStream = resource.getInputStream()) {
-				final String string2 = FileNameUtil.getPosixFullPath(string);
+				final String string2 = PathUtil.getPosixFullPath(string);
 				program2 = Program.createFromResource(type, name, inputStream, resource.getResourcePackName(), new GLImportProcessor() {
 					private final Set<String> visitedImports = Sets.newHashSet();
 
 					@Override
 					public String loadImport(boolean inline, String name) {
 						String string;
-						name = FileNameUtil.normalizeToPosix((inline ? string2 : Shader.INCLUDE_DIRECTORY) + name);
+						name = PathUtil.normalizeToPosix((inline ? string2 : Shader.INCLUDE_DIRECTORY) + name);
 						if (!this.visitedImports.add(name)) return null;
 						Identifier identifier = Identifier.of(name);
 						BufferedReader reader;

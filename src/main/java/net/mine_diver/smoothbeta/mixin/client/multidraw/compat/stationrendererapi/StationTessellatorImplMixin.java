@@ -54,17 +54,17 @@ abstract class StationTessellatorImplMixin {
             fastVertexData[22] = Float.floatToRawIntBits((float) (Float.intBitsToFloat(fastVertexData[22]) + y + access.getYOffset()));
             fastVertexData[23] = Float.floatToRawIntBits((float) (Float.intBitsToFloat(fastVertexData[23]) + z + access.getZOffset()));
             fastVertexData[27] = normal;
-            if (!access.getDisableColour()) {
+            if (!access.getColorDisabled()) {
                 fastVertexData[5] = colour0;
                 fastVertexData[12] = colour1;
                 fastVertexData[19] = colour2;
                 fastVertexData[26] = colour3;
-                access.setHasColour(true);
+                access.setHasColor(true);
             }
             access.setHasTexture(true);
             access.setHasNormals(true);
-            System.arraycopy(fastVertexData, 0, access.stationapi$getBufferArray(), access.stationapi$getBufferPosition(), 28);
-            access.stationapi$setVertexAmount(access.stationapi$getVertexAmount() + 4);
+            System.arraycopy(fastVertexData, 0, access.stationapi$getBuffer(), access.stationapi$getBufferPosition(), 28);
+            access.stationapi$setAddedVertexCount(access.stationapi$getAddedVertexCount() + 4);
             access.stationapi$setBufferPosition(access.stationapi$getBufferPosition() + 28);
             access.stationapi$setVertexCount(access.stationapi$getVertexCount() + 4);
             ensureBufferCapacity(28);

@@ -3,9 +3,9 @@ package net.mine_diver.smoothbeta.client.render;
 import net.mine_diver.smoothbeta.client.render.gl.Program;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.modificationstation.stationapi.api.client.event.resource.AssetsResourceReloaderRegisterEvent;
-import net.modificationstation.stationapi.api.registry.Identifier;
 import net.modificationstation.stationapi.api.resource.IdentifiableResourceReloadListener;
 import net.modificationstation.stationapi.api.resource.ResourceManager;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.profiler.Profiler;
 
 import java.io.IOException;
@@ -15,10 +15,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
-import static net.mine_diver.smoothbeta.SmoothBeta.MODID;
+import static net.mine_diver.smoothbeta.SmoothBeta.NAMESPACE;
 
 public class Shaders implements IdentifiableResourceReloadListener {
-    public static final Identifier ID = MODID.id("shaders");
+    public static final Identifier ID = NAMESPACE.id("shaders");
 
     private static Shader terrainShader;
 

@@ -4,8 +4,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.modificationstation.stationapi.api.util.FileNameUtil;
-import net.modificationstation.stationapi.api.util.StringHelper;
+import net.mine_diver.smoothbeta.util.StringHelper;
+import net.modificationstation.stationapi.api.util.PathUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +69,7 @@ public abstract class GLImportProcessor {
 
 						++context.line;
 						k = context.line;
-						List<String> list2 = this.parseImports(string5, context, bl ? FileNameUtil.getPosixFullPath(string4) : "");
+						List<String> list2 = this.parseImports(string5, context, bl ? PathUtil.getPosixFullPath(string4) : "");
 						list2.set(0, String.format(Locale.ROOT, "#line %d %d\n%s", 0, k, this.extractVersion(list2.get(0), context)));
 						if (!StringUtils.isBlank(string3)) {
 							list.add(string3);
