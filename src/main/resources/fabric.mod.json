@@ -33,6 +33,6 @@
 
   "depends": {
     "minecraft": "1.0.0-beta.7.3",
-    "stationapi": "*"
+    "stationapi": "2.0-alpha.1"
   }
 }
