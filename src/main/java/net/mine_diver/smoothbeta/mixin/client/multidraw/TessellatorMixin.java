@@ -2,10 +2,11 @@ package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import net.mine_diver.smoothbeta.client.render.SmoothChunkRenderer;
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
+import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
 import net.minecraft.client.render.Tessellator;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import net.modificationstation.stationapi.api.tick.TickScheduler;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,6 +20,13 @@ abstract class TessellatorMixin implements SmoothTessellator {
     @Shadow protected abstract void reset();
 
     @Shadow private ByteBuffer byteBuffer;
+
+    @Mutable
+    @Shadow @Final public static Tessellator INSTANCE;
+
+    @Unique
+    private static Tessellator smoothbeta_vanillaInstance;
+
     @Unique
     private boolean smoothbeta_renderingTerrain;
     @Unique
@@ -29,6 +37,7 @@ abstract class TessellatorMixin implements SmoothTessellator {
     public void smoothbeta_startRenderingTerrain(SmoothChunkRenderer chunkRenderer) {
         smoothbeta_renderingTerrain = true;
         smoothbeta_chunkRenderer = chunkRenderer;
+//        INSTANCE = (Tessellator) (Object) this;
     }
 
     @Override
@@ -36,6 +45,7 @@ abstract class TessellatorMixin implements SmoothTessellator {
     public void smoothbeta_stopRenderingTerrain() {
         smoothbeta_renderingTerrain = false;
         smoothbeta_chunkRenderer = null;
+//        INSTANCE = smoothbeta_vanillaInstance;
     }
 
     @Override
@@ -54,10 +64,23 @@ abstract class TessellatorMixin implements SmoothTessellator {
     )
     private void smoothbeta_uploadTerrain(CallbackInfo ci) {
         if (!smoothbeta_renderingTerrain) return;
-        smoothbeta_chunkRenderer.smoothbeta_getCurrentBuffer().upload(byteBuffer);
+        ByteBuffer byteBuffer1 = clone(byteBuffer);
+        VertexBuffer vertexBuffer = smoothbeta_chunkRenderer.smoothbeta_getCurrentBuffer();
+        TickScheduler.CLIENT_RENDER_START.immediate(() -> vertexBuffer.upload(byteBuffer1));
         reset();
         ci.cancel();
     }
+
+    @Unique
+    private static ByteBuffer clone(ByteBuffer original) {
+        ByteBuffer clone = ByteBuffer.allocateDirect(original.capacity());
+        original.rewind();
+        clone.put(original);
+//        original.rewind();
+//        clone.flip();
+        return clone;
+    }
+
 
     @ModifyConstant(
             method = "vertex(DDD)V",
@@ -76,5 +99,18 @@ abstract class TessellatorMixin implements SmoothTessellator {
     )
     private int smoothbeta_compactVertices(int constant) {
         return smoothbeta_renderingTerrain ? 7 : 8;
+    }
+
+    @Inject(
+            method = "<clinit>",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/Tessellator;INSTANCE:Lnet/minecraft/client/render/Tessellator;",
+                    opcode = Opcodes.PUTSTATIC,
+                    shift = At.Shift.AFTER
+            )
+    )
+    private static void smoothbeta_setVanillaInstance(CallbackInfo ci) {
+        smoothbeta_vanillaInstance = INSTANCE;
     }
 }

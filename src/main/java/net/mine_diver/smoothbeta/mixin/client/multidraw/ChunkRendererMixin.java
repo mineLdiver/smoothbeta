@@ -1,10 +1,9 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.fabricmc.loader.api.FabricLoader;
-import net.mine_diver.smoothbeta.client.render.SmoothChunkRenderer;
-import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
-import net.mine_diver.smoothbeta.client.render.SmoothWorldRenderer;
-import net.mine_diver.smoothbeta.client.render.VboPool;
+import net.mine_diver.smoothbeta.client.render.*;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.class_42;
@@ -12,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.ChunkBuilder;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.HashSet;
+
+import static net.mine_diver.smoothbeta.client.render.ChunkBuilderManager.THREAD_TESSELLATOR;
 
 @Mixin(ChunkBuilder.class)
 class ChunkRendererMixin implements SmoothChunkRenderer {
@@ -99,5 +101,33 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     private void smoothbeta_stopRenderingTerrain(CallbackInfo ci) {
         smoothbeta_currentBufferIndex = -1;
         ((SmoothTessellator) tessellator).smoothbeta_stopRenderingTerrain();
+    }
+
+    @ModifyExpressionValue(
+            method = "<clinit>",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/Tessellator;INSTANCE:Lnet/minecraft/client/render/Tessellator;",
+                    opcode = Opcodes.GETSTATIC
+            )
+    )
+    private static Tessellator smoothbeta_returnThreadTessellator(Tessellator value) {
+        return THREAD_TESSELLATOR;
+    }
+
+    @Inject(
+            method = "rebuild",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/client/render/chunk/ChunkBuilder;chunkUpdates:I",
+                    opcode = Opcodes.GETSTATIC
+            ),
+            cancellable = true
+    )
+    private void smoothbeta_execute(CallbackInfo ci) {
+        if (Thread.currentThread().getName().equals("Minecraft main thread")) {
+            ChunkBuilderManager.EXECUTOR_SERVICE.execute(((ChunkBuilder) (Object) this)::rebuild);
+            ci.cancel();
+        }
     }
 }
