@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(BlockRenderManager.class)
 public class BlockRenderManagerMixin {
-    @ModifyExpressionValue(
-            method = "*",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/client/render/Tessellator;INSTANCE:Lnet/minecraft/client/render/Tessellator;",
-                    opcode = Opcodes.GETSTATIC
-            )
-    )
-    private static Tessellator smoothbeta_getTessellator(Tessellator tessellator) {
-        return Thread.currentThread().getName().equals("Minecraft main thread") ? tessellator : ChunkBuilderManager.THREAD_TESSELLATOR;
-    }
+//    @ModifyExpressionValue(
+//            method = "*",
+//            at = @At(
+//                    value = "FIELD",
+//                    target = "Lnet/minecraft/client/render/Tessellator;INSTANCE:Lnet/minecraft/client/render/Tessellator;",
+//                    opcode = Opcodes.GETSTATIC
+//            )
+//    )
+//    private static Tessellator smoothbeta_getTessellator(Tessellator tessellator) {
+//        return Thread.currentThread().getName().equals("Minecraft main thread") ? tessellator : ChunkBuilderManager.THREAD_TESSELLATOR;
+//    }
 }

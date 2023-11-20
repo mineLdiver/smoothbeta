@@ -1,12 +1,13 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
-import net.mine_diver.smoothbeta.client.render.SmoothChunkRenderer;
+import net.mine_diver.smoothbeta.client.render.SmoothChunkBuilder;
 import net.mine_diver.smoothbeta.client.render.SmoothTessellator;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
 import net.minecraft.client.render.Tessellator;
 import net.modificationstation.stationapi.api.tick.TickScheduler;
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,23 +22,16 @@ abstract class TessellatorMixin implements SmoothTessellator {
 
     @Shadow private ByteBuffer byteBuffer;
 
-    @Mutable
-    @Shadow @Final public static Tessellator INSTANCE;
-
-    @Unique
-    private static Tessellator smoothbeta_vanillaInstance;
-
     @Unique
     private boolean smoothbeta_renderingTerrain;
     @Unique
-    private SmoothChunkRenderer smoothbeta_chunkRenderer;
+    private SmoothChunkBuilder smoothbeta_chunkRenderer;
 
     @Override
     @Unique
-    public void smoothbeta_startRenderingTerrain(SmoothChunkRenderer chunkRenderer) {
+    public void smoothbeta_startRenderingTerrain(SmoothChunkBuilder chunkRenderer) {
         smoothbeta_renderingTerrain = true;
         smoothbeta_chunkRenderer = chunkRenderer;
-//        INSTANCE = (Tessellator) (Object) this;
     }
 
     @Override
@@ -45,7 +39,6 @@ abstract class TessellatorMixin implements SmoothTessellator {
     public void smoothbeta_stopRenderingTerrain() {
         smoothbeta_renderingTerrain = false;
         smoothbeta_chunkRenderer = null;
-//        INSTANCE = smoothbeta_vanillaInstance;
     }
 
     @Override
@@ -99,18 +92,5 @@ abstract class TessellatorMixin implements SmoothTessellator {
     )
     private int smoothbeta_compactVertices(int constant) {
         return smoothbeta_renderingTerrain ? 7 : 8;
-    }
-
-    @Inject(
-            method = "<clinit>",
-            at = @At(
-                    value = "FIELD",
-                    target = "Lnet/minecraft/client/render/Tessellator;INSTANCE:Lnet/minecraft/client/render/Tessellator;",
-                    opcode = Opcodes.PUTSTATIC,
-                    shift = At.Shift.AFTER
-            )
-    )
-    private static void smoothbeta_setVanillaInstance(CallbackInfo ci) {
-        smoothbeta_vanillaInstance = INSTANCE;
     }
 }

@@ -1,5 +1,7 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import net.mine_diver.smoothbeta.client.render.*;
 import net.minecraft.class_472;
 import net.minecraft.client.render.WorldRenderer;
@@ -28,6 +30,10 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
 
     @Unique
     private VboPool smoothbeta_vboPool;
+    @Unique
+    private long smoothbeta_updateStartTimeNs = 0L;
+    @Unique
+    private float smoothbeta_timePerUpdateMs = 10.0F;
 
     @Override
     @Unique
@@ -40,6 +46,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             at = @At("HEAD")
     )
     private void smoothbeta_resetVboPool(CallbackInfo ci) {
+        UpdateThread.INSTANCE.clearAllUpdates();
         if (smoothbeta_vboPool != null)
             smoothbeta_vboPool.deleteGlBuffers();
         smoothbeta_vboPool = new VboPool(VertexFormats.POSITION_TEXTURE_COLOR_NORMAL);
@@ -66,7 +73,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void smoothbeta_addBufferToRegion(int j, int k, int d, double par4, CallbackInfoReturnable<Integer> cir, int var6, LivingEntity var7, double var8, double var10, double var12, int var14, int var15, ChunkBuilder var16, int var17) {
-        ((RenderRegion) this.field_1794[var17]).addBuffer(((SmoothChunkRenderer) var16).smoothbeta_getBuffer(d));
+        ((RenderRegion) this.field_1794[var17]).addBuffer(((SmoothChunkBuilder) var16).smoothbeta_getBuffer(d));
     }
 
     @Redirect(
@@ -87,7 +94,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             method = "method_1540(ID)V",
             at = @At("HEAD")
     )
-    public void smoothbeta_beforeRenderRegion(int d, double par2, CallbackInfo ci) {
+    private void smoothbeta_beforeRenderRegion(int d, double par2, CallbackInfo ci) {
         Shader shader = Shaders.getTerrainShader();
 
         shader.addSampler("Sampler0", 0);
@@ -112,7 +119,7 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
             method = "method_1540(ID)V",
             at = @At("RETURN")
     )
-    public void smoothbeta_afterRenderRegion(int d, double par2, CallbackInfo ci) {
+    private void smoothbeta_afterRenderRegion(int d, double par2, CallbackInfo ci) {
         Shaders.getTerrainShader().unbind();
 
         GL20.glDisableVertexAttribArray(0); // pos
@@ -124,4 +131,82 @@ abstract class WorldRendererMixin implements SmoothWorldRenderer {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
+
+//    @Inject(
+//            method = "method_1548",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/class_583;method_1927()V",
+//                    shift = At.Shift.AFTER
+//            )
+//    )
+//    private void smoothbeta_unpauseThread(
+//            LivingEntity i, int d, double par3, CallbackInfoReturnable<Integer> cir,
+//            @Share("updateTargetNum") LocalIntRef updateTargetNum
+//    ) {
+//        UpdateThread updateThread = UpdateThread.INSTANCE;
+//        if (this.smoothbeta_updateStartTimeNs == 0L) {
+//            this.smoothbeta_updateStartTimeNs = System.nanoTime();
+//        }
+//
+//        if (updateThread.hasWorkToDo()) {
+////            updateTargetNum.set(Config.getUpdatesPerFrame());
+//            updateTargetNum.set(1);
+////            if (Config.isDynamicUpdates() && !this.isMoving(player)) {
+////                updateTargetNum *= 3;
+////            }
+//
+//            updateTargetNum.set(Math.min(updateTargetNum.get(), updateThread.getPendingUpdatesCount()));
+//            if (updateTargetNum.get() > 0) {
+//                updateThread.unpause();
+//            }
+//        }
+//    }
+//
+//    @Inject(
+//            method = "method_1548",
+//            at = @At("RETURN")
+//    )
+//    private void smoothbeta_pauseThread(
+//            LivingEntity i, int d, double par3, CallbackInfoReturnable<Integer> cir,
+//            @Share("updateTargetNum") LocalIntRef updateTargetNum
+//    ) throws InterruptedException {
+//        UpdateThread updateThread = UpdateThread.INSTANCE;
+//        float sleepTimeMs;
+//        if (updateTargetNum.get() > 0) {
+//            long renderTimeNs = System.nanoTime() - this.smoothbeta_updateStartTimeNs;
+//            float targetRunTime = this.smoothbeta_timePerUpdateMs * (1.0F + (float)(updateTargetNum.get() - 1) / 2.0F);
+//            sleepTimeMs = targetRunTime - (float)renderTimeNs / 1000000.0F;
+//            if (sleepTimeMs > 0.0F) {
+////                step = (int)sleepTimeMs;
+////                Config.sleep((long)step);
+//                Thread.sleep((long) sleepTimeMs);
+//            }
+//        }
+//
+//        updateThread.pause();
+//        float deltaTime = 0.2F;
+//        if (updateTargetNum.get() > 0) {
+//            int updateCount = updateThread.resetUpdateCount();
+//            if (updateCount < updateTargetNum.get()) {
+//                this.smoothbeta_timePerUpdateMs += deltaTime;
+//            }
+//
+//            if (updateCount > updateTargetNum.get()) {
+//                this.smoothbeta_timePerUpdateMs -= deltaTime;
+//            }
+//
+//            if (updateCount == updateTargetNum.get()) {
+//                this.smoothbeta_timePerUpdateMs -= deltaTime;
+//            }
+//        } else {
+//            this.smoothbeta_timePerUpdateMs -= deltaTime / 5.0F;
+//        }
+//
+//        if (this.smoothbeta_timePerUpdateMs < 0.0F) {
+//            this.smoothbeta_timePerUpdateMs = 0.0F;
+//        }
+//
+//        this.smoothbeta_updateStartTimeNs = System.nanoTime();
+//    }
 }

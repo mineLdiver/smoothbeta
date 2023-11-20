@@ -1,7 +1,7 @@
 package net.mine_diver.smoothbeta.mixin.client.multidraw;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.loader.api.FabricLoader;
 import net.mine_diver.smoothbeta.client.render.*;
 import net.mine_diver.smoothbeta.client.render.gl.VertexBuffer;
@@ -17,25 +17,27 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.HashSet;
 
-import static net.mine_diver.smoothbeta.client.render.ChunkBuilderManager.THREAD_TESSELLATOR;
-
 @Mixin(ChunkBuilder.class)
-class ChunkRendererMixin implements SmoothChunkRenderer {
+class ChunkBuilderMixin implements SmoothChunkBuilder {
     @Shadow private static Tessellator tessellator;
 
     @Shadow public boolean[] renderLayerEmpty;
     @Shadow public int renderX;
     @Shadow public int renderY;
     @Shadow public int renderZ;
+    @Shadow public boolean invalidated;
     @Unique
     private VertexBuffer[] smoothbeta_buffers;
     @Unique
     private int smoothbeta_currentBufferIndex = -1;
+    @Unique
+    private volatile boolean smoothbeta_isUpdating;
 
     @Override
     @Unique
@@ -112,8 +114,25 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
             )
     )
     private static Tessellator smoothbeta_returnThreadTessellator(Tessellator value) {
-        return THREAD_TESSELLATOR;
+        return UpdateThread.INSTANCE.threadTessellator;
     }
+
+    @Inject(
+            method = "rebuild",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void smoothbeta_ensureThread(CallbackInfo ci) {
+        if (Thread.currentThread() == UpdateThread.INSTANCE) {
+            invalidated = true;
+            return;
+        }
+        UpdateThread.INSTANCE.addBuilderToUpdate((ChunkBuilder) (Object) this, true);
+        smoothbeta_isUpdating = false;
+        invalidated = false;
+        ci.cancel();
+    }
+
 
     @Inject(
             method = "rebuild",
@@ -121,13 +140,47 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
                     value = "FIELD",
                     target = "Lnet/minecraft/client/render/chunk/ChunkBuilder;chunkUpdates:I",
                     opcode = Opcodes.GETSTATIC
-            ),
-            cancellable = true
+            )
     )
-    private void smoothbeta_execute(CallbackInfo ci) {
-        if (Thread.currentThread().getName().equals("Minecraft main thread")) {
-            ChunkBuilderManager.EXECUTOR_SERVICE.execute(((ChunkBuilder) (Object) this)::rebuild);
-            ci.cancel();
-        }
+    private void smoothbeta_notInvalidated(CallbackInfo ci) {
+        invalidated = false;
+    }
+
+    @Override
+    public boolean smoothbeta_isUpdating() {
+        return smoothbeta_isUpdating;
+    }
+
+    @Override
+    public void smoothbeta_setUpdating(boolean updating) {
+        smoothbeta_isUpdating = updating;
+    }
+
+    @ModifyVariable(
+            method = "rebuild",
+            at = @At(
+                    value = "LOAD",
+                    ordinal = 0
+            ),
+            index = 15
+    )
+    private int smoothbeta_yieldWork(
+            int y,
+            @Local(index = 13) int hasBlocks
+    ) {
+        if (hasBlocks != 0)
+            UpdateThread.INSTANCE.yieldWork();
+        return y;
+    }
+
+    @Inject(
+            method = "rebuild",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/Tessellator;draw()V"
+            )
+    )
+    private void smoothbeta_yieldWorkAtFinish(CallbackInfo ci) {
+        UpdateThread.INSTANCE.yieldWork();
     }
 }
