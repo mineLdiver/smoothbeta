@@ -25,6 +25,7 @@ import java.util.HashSet;
 import static net.mine_diver.smoothbeta.client.render.ChunkBuilderManager.THREAD_TESSELLATOR;
 
 @Mixin(ChunkBuilder.class)
+abstract
 class ChunkRendererMixin implements SmoothChunkRenderer {
     @Shadow private static Tessellator tessellator;
 
@@ -32,6 +33,10 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     @Shadow public int renderX;
     @Shadow public int renderY;
     @Shadow public int renderZ;
+    @Shadow public boolean invalidated;
+
+    @Shadow public abstract void rebuild();
+
     @Unique
     private VertexBuffer[] smoothbeta_buffers;
     @Unique
@@ -126,7 +131,12 @@ class ChunkRendererMixin implements SmoothChunkRenderer {
     )
     private void smoothbeta_execute(CallbackInfo ci) {
         if (Thread.currentThread().getName().equals("Minecraft main thread")) {
-            ChunkBuilderManager.EXECUTOR_SERVICE.execute(((ChunkBuilder) (Object) this)::rebuild);
+            boolean invalidated = this.invalidated;
+            ChunkBuilderManager.EXECUTOR_SERVICE.execute(() -> {
+                this.invalidated = invalidated;
+                rebuild();
+                this.invalidated = false;
+            });
             ci.cancel();
         }
     }
