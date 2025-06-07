@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.MinecraftAccessor",
+    "client.MinecraftMixin",
     "client.MixinEntityRendererDispatcher",
     "client.MixinTileEntityRenderDispatcher",
     "client.multidraw.ChunkRendererMixin",
