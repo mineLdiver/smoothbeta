@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
+import net.modificationstation.stationapi.api.util.Identifier;
 import net.modificationstation.stationapi.api.util.Util;
 
 import java.lang.invoke.LambdaMetafactory;
@@ -46,9 +47,9 @@ public class SmoothEntityRegistry {
         ID_TO_CONSTRUCTOR.put(id, constructor);
     }
 
-    public static void registerNoID(Class<? extends Entity> entityClass, String identifier) {
+    public static void register(Class<? extends Entity> entityClass, Identifier identifier) {
         try {
-            STRING_ID_TO_CONSTRUCTOR.put(identifier, findConstructor(entityClass));
+            STRING_ID_TO_CONSTRUCTOR.put(identifier.toString(), findConstructor(entityClass));
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

@@ -1,53 +1,60 @@
 plugins {
-	id 'fabric-loom' version '1.8.12'
-	id 'babric-loom-extension' version '1.8.9'
 	id 'maven-publish'
+	id 'fabric-loom' version '1.17.20'
+	id 'babric-loom-extension' version '1.17.2'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+version = property("mod_version")
+group = property("maven_group")
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+base {
+	archivesName = project.archives_base_name
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+	withSourcesJar()
+}
 
 loom {
-	customMinecraftManifest.set("https://babric.github.io/manifest-polyfill/${minecraft_version}.json")
-	intermediaryUrl.set("https://maven.glass-launcher.net/babric/babric/intermediary/%1\$s/intermediary-%1\$s-v2.jar")
+	mixin {
+		useLegacyMixinAp = false
+	}
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-
 	// Used for the fabric toolchain in this project.
 	maven {
 		name = 'Babric'
 		url = 'https://maven.glass-launcher.net/babric'
 	}
+	
 	// Used for mappings.
 	maven {
 		name = 'Glass Releases'
 		url = 'https://maven.glass-launcher.net/releases'
 	}
+	
 	// Used for StationAPI and HowManyItems.
 	maven {
 		name = 'Glass Snapshots'
 		url = 'https://maven.glass-launcher.net/snapshots'
 	}
+	
 	// Used for a StationAPI dependency.
 	maven {
 		name = 'Froge'
 		url 'https://maven.minecraftforge.net/'
 	}
+	
 	// Used for projects that do not have a maven repository, but do have a GitHub repository with working build scripts.
 	maven {
 		name = 'Jitpack'
 		url = 'https://jitpack.io'
 	}
+	
 	// Used for another StationAPI dependency
 	exclusiveContent {
 		forRepository {
@@ -60,36 +67,38 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	
 	mavenCentral()
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.glasslauncher:biny:${project.yarn_mappings}:v2"
-	modImplementation "babric:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
-	implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2'
+	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2"
 	implementation(include("me.carleslc:Simple-Yaml:1.8.4") as Dependency)
 
-	modImplementation "net.modificationstation:StationAPI:${project.stapi_version}"
+	modImplementation("net.modificationstation:StationAPI:${project.stapi_version}") {
+		exclude group: "babric", module: "fabric-loader"
+	}
 
 	// Optional, but convenient mods for mod creators and users alike.
-	modImplementation("net.glasslauncher.mods:ModMenu:${project.modmenu_version}") {
-		transitive false
+	modImplementation("net.danygames2014:modmenu:${project.modmenu_version}") {
+		transitive = false
 	}
 
 	modImplementation("net.glasslauncher.mods:glass-networking:${project.glass_networking_version}") {
-		transitive false
+		transitive = false
 	}
 
 	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.gcapi_version}") {
-		transitive false
+		transitive = false
 	}
 
 	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.alwaysmoreitems_version}") {
-		transitive false
+		transitive = false
 	}
 }
 
@@ -102,21 +111,22 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	// Loom also requires J17.
 	it.options.release = 17
 }
 
-java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+// Disables the generation of the .module file
+tasks.withType(GenerateModuleMetadata).configureEach {
+	enabled = false
+}
+
+// Gradle 9 fails the build if there are no tests, but we are using the test package for a test mod
+tasks.withType(Test).configureEach {
+	failOnNoDiscoveredTests = false
 }
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_" + base.archivesName.get() }
 	}
 }
 
@@ -128,11 +138,7 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		
 	}
 }
