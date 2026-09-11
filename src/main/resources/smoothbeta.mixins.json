@@ -8,13 +8,13 @@
     "client.MinecraftAccessor",
     "client.MixinEntityRendererDispatcher",
     "client.MixinTileEntityRenderDispatcher",
-    "client.multidraw.ChunkRendererMixin",
-    "client.multidraw.RenderListAccessor",
-    "client.multidraw.TessellatorMixin",
-    "client.multidraw.WorldRendererMixin",
-    "client.multidraw.compat.arsenic.ArsenicTessellatorMixin",
-    "client.multidraw.compat.stationrendererapi.StationTessellatorImplMixin",
-    "client.multidraw.nop.ChunkRendererMixin"
+    "client.backend.multidrawgl43.ChunkRendererMixin",
+    "client.backend.multidrawgl43.RenderListAccessor",
+    "client.backend.multidrawgl43.TessellatorMixin",
+    "client.backend.multidrawgl43.WorldRendererMixin",
+    "client.backend.multidrawgl43.compat.arsenic.ArsenicTessellatorMixin",
+    "client.backend.multidrawgl43.compat.stationrendererapi.StationTessellatorImplMixin",
+    "client.backend.multidrawgl43.nop.ChunkRendererMixin"
   ],
   "mixins": [
     "chunkcache.ChunkCacheMixin",
