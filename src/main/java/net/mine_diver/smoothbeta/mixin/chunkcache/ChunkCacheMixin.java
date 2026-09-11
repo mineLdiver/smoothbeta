@@ -1,4 +1,4 @@
-package net.mine_diver.smoothbeta.mixin;
+package net.mine_diver.smoothbeta.mixin.chunkcache;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 
 @Mixin(ChunkCache.class)
-abstract class MixinServerChunkCache {
+abstract class ChunkCacheMixin {
 
     @Shadow private Map<Integer, Chunk> chunkByPos;
 

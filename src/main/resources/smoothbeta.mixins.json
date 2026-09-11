@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.mine_diver.smoothbeta.mixin",
+  "plugin": "net.mine_diver.smoothbeta.mixin.SmoothBetaMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.MinecraftAccessor",
@@ -16,7 +17,7 @@
     "client.multidraw.nop.ChunkRendererMixin"
   ],
   "mixins": [
-    "MixinServerChunkCache",
+    "chunkcache.ChunkCacheMixin",
     "entity.MixinEntityRegistry",
     "entity.compat.stationentities.EntityRegisterEventMixin"
   ],
