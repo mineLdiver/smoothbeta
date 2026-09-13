@@ -24,7 +24,13 @@
     ],
     "stationapi:event_bus_client": [
       "net.mine_diver.smoothbeta.client.SmoothBetaClient",
-      "net.mine_diver.smoothbeta.client.render.Shaders"
+      "net.mine_diver.smoothbeta.client.backend.multidrawgl43.Shaders"
+    ],
+    "gcapi3": [
+      "net.mine_diver.smoothbeta.config.Config"
+    ],
+    "gcapi3:factory_provider": [
+      "net.mine_diver.smoothbeta.config.Config"
     ]
   },
   "mixins": [
@@ -34,5 +40,8 @@
   "depends": {
     "minecraft": "1.0.0-beta.7.3",
     "stationapi": ">=2.0.0-alpha.6"
+  },
+  "recommends": {
+    "gcapi3": ">=3.2.0"
   }
 }
